@@ -33,11 +33,21 @@ bot = Bot(<access_token>)
 bot.send_text_message(recipient_id, message)
 ```
 
+__Note__: From Facebook
+
+> These ids are page-scoped. These ids differ from those returned from Facebook Login apps which are app-scoped. You must use ids retrieved from a Messenger integration for this page in order to function properly.
+
+
 ### Todo
 
 * Structured Messages
 * Receipt Messages
+* Tests!
 
 ### Example
 
-You can find an example of a Facebook Bot in ```examples/```
+![Screenshot of Echo Facebook Bot](https://cloud.githubusercontent.com/assets/68039/14516627/905c84ae-0237-11e6-918e-2c2ae9352f7d.png)
+
+You can find an example of an Echo Facebook Bot in ```examples/```
+
+
