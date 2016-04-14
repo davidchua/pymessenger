@@ -16,3 +16,12 @@ class Bot:
         payload['recipient'] = "{0}".format(recipient)
         payload['message'] = "{0}".format(message)
         return requests.post(self.base_url, data=(payload)).json()
+
+    def send_message(self, recipient_id, message):
+        recipient = {
+                "id": recipient_id
+                }
+        payload ={}
+        payload['recipient'] = "{0}".format(recipient)
+        payload['message'] = "{0}".format(message)
+        return requests.post(self.base_url, data=(payload)).json()
