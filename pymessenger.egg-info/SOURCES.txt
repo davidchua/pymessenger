@@ -1,0 +1,7 @@
+setup.cfg
+setup.py
+pymessenger/__init__.py
+pymessenger.egg-info/PKG-INFO
+pymessenger.egg-info/SOURCES.txt
+pymessenger.egg-info/dependency_links.txt
+pymessenger.egg-info/top_level.txt
