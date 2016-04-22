@@ -13,7 +13,7 @@ class Bot:
         return requests.post(self.base_url, json=payload).json()
 
     def send_message(self, recipient_id, message):
-        payload ={'id': recipient_id,
+        payload ={'recipient': {'id': recipient_id},
                   'message': message
                  }
         return requests.post(self.base_url, json=payload).json()
