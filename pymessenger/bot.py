@@ -10,8 +10,9 @@ class Bot:
         payload = {'recipient': {'id': recipient_id},
                    'message': {'text': message}
                   }
-        return requests.post(self.base_url, json=payload).json()
-
+        result = requests.post(self.base_url, json=payload)
+        return result.json()
+ 
     def send_message(self, recipient_id, message):
         payload ={'recipient': {'id': recipient_id},
                   'message': message
