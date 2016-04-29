@@ -1,36 +1,54 @@
+import json
 import requests
 from requests_toolbelt import MultipartEncoder
-import json
 
-class Bot:
-    def __init__(self, access_token):
+DEFAULT_API_VERSION = 2.6
+
+class Bot(object):
+    def __init__(self, access_token, api_version=DEFAULT_API_VERSION):
+        self.api_version = api_version
         self.access_token = access_token
-        self.base_url = "https://graph.facebook.com/v2.6/me/messages?access_token={0}".format(access_token)
+        self.base_url = (
+            "https://graph.facebook.com"
+            "/v{0}/me/messages?access_token={1}"
+        ).format(self.api_version, access_token)
 
     def send_text_message(self, recipient_id, message):
-        payload = {'recipient': {'id': recipient_id},
-                   'message': {'text': message}
-                  }
+        payload = {
+            'recipient': {
+                'id': recipient_id
+            },
+            'message': {
+                'text': message
+            }
+        }
         result = requests.post(self.base_url, json=payload)
         return result.json()
- 
+
     def send_message(self, recipient_id, message):
-        payload ={'recipient': {'id': recipient_id},
-                  'message': message
-                 }
+        payload = {
+            'recipient': {
+                'id': recipient_id
+            },
+            'message': message
+        }
         return requests.post(self.base_url, json=payload).json()
 
     def send_generic_message(self, recipient_id, elements):
-        payload = {'recipient': {'id': recipient_id},
-                   'message': { "attachment": {
-                                "type": "template",
-                                "payload": {
-                                    "template_type": "generic",
-                                    "elements": elements
-                                    }
-                                }
-                              }
-                   }
+        payload = {
+            'recipient': {
+                'id': recipient_id
+            },
+            'message': {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": elements
+                    }
+                }
+            }
+        }
         return requests.post(self.base_url, json=payload).json()
 
     def send_image(self, recipient_id, image_path):
@@ -41,7 +59,7 @@ class Bot:
                 }
             ),
             'message': json.dumps(
-                {                
+                {
                     'attachment': {
                         'type': 'image',
                         'payload': {}
@@ -51,5 +69,7 @@ class Bot:
             'filedata': (image_path, open(image_path, 'rb'))
         }
         multipart_data = MultipartEncoder(payload)
-        multipart_header = {'Content-Type': multipart_data.content_type}
+        multipart_header = {
+            'Content-Type': multipart_data.content_type
+        }
         return requests.post(self.base_url, data=multipart_data, headers=multipart_header)
