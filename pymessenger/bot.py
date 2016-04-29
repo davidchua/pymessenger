@@ -22,8 +22,7 @@ class Bot(object):
                 'text': message
             }
         }
-        result = requests.post(self.base_url, json=payload)
-        return result.json()
+        return self._send_payload(payload)
 
     def send_message(self, recipient_id, message):
         payload = {
@@ -32,7 +31,7 @@ class Bot(object):
             },
             'message': message
         }
-        return requests.post(self.base_url, json=payload).json()
+        return self._send_payload(payload)
 
     def send_generic_message(self, recipient_id, elements):
         payload = {
@@ -49,9 +48,39 @@ class Bot(object):
                 }
             }
         }
-        return requests.post(self.base_url, json=payload).json()
+        return self._send_payload(payload)
+
+    def send_button_message(self, recipient_id, text, buttons):
+        payload = {
+            'recipient': {
+                'id': recipient_id
+            },
+            'message': {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "button",
+                        "text": text,
+                        "buttons": buttons
+                    }
+                }
+            }
+        }
+        return self._send_payload(payload)
+
+    def _send_payload(self, payload):
+        result = requests.post(self.base_url, json=payload).json()
+        return result
 
     def send_image(self, recipient_id, image_path):
+        '''
+            This sends an image to the specified recipient.
+            Input:
+              recipient_id: recipient id to send to
+              image_path: path to image to be sent
+            Output:
+              Response from API as <dict>
+        '''
         payload = {
             'recipient': json.dumps(
                 {
@@ -72,4 +101,4 @@ class Bot(object):
         multipart_header = {
             'Content-Type': multipart_data.content_type
         }
-        return requests.post(self.base_url, data=multipart_data, headers=multipart_header)
+        return requests.post(self.base_url, data=multipart_data, headers=multipart_header).json()
