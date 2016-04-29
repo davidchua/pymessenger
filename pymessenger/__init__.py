@@ -1,5 +1,7 @@
 import json
 
+from .bot import Bot
+
 class Element(object):
 
     __acceptable_keys = ['title', 'item_url', 'image_url', 'subtitle']
