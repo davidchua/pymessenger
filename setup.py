@@ -4,7 +4,8 @@ setup(
   packages = ['pymessenger'],
   version = '0.0.3.1',
   install_requires=[
-        'requests'
+        'requests',
+        'requests-toolbelt'
   ],
   description = "Python Wrapper for FB Messenger Bot",
   author = 'David Chua',
