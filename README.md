@@ -27,7 +27,7 @@ $ pip install pymessenger
 ### Usage
 
 ```python
-from pymessenger import Bot
+from pymessenger.bot import Bot
 
 bot = Bot(<access_token>)
 bot.send_text_message(recipient_id, message)
@@ -44,7 +44,7 @@ __Note__: From Facebook
 
 
 ```python
-from pymessenger import Bot
+from pymessenger.bot import Bot
 bot = Bot(<access_token>)
 elements = []
 element = Element(title="test", image_url="<arsenal_logo.png>", subtitle="subtitle", item_url="http://arsenal.com")
