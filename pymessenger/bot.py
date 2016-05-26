@@ -109,7 +109,7 @@ class Bot(object):
             Image must be PNG or JPEG.
             Input:
               recipient_id: recipient id to send to
-              image_url: url to image to be sent
+              image_url: url of image to be sent
             Output:
               Response from API as <dict>
         '''
