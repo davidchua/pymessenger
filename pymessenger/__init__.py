@@ -1,5 +1,6 @@
 import json
 
+from .send_api import SendApiClient
 from .bot import Bot
 
 class Element(object):
