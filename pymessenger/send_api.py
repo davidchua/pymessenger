@@ -26,8 +26,6 @@ class SendApiClient(object):
 
         return response
 
-
-
     def send_text_message(self, recipient_id, message_text):
         payload = {
             'recipient': {
@@ -117,3 +115,23 @@ class SendApiClient(object):
             'Content-Type': multipart_data.content_type
         }
         return requests.post(self.base_url, data=multipart_data, headers=multipart_header).json()
+
+    def send_image_url(self, recipient_id, image_url):
+        payload = {
+            'recipient': json.dumps(
+                {
+                    'id': recipient_id
+                }
+            ),
+            'message': json.dumps(
+                {
+                    'attachment': {
+                        'type': 'image',
+                        'payload': {
+                            'url': image_url
+                        }
+                    }
+                }
+            )
+        }
+        return self._send_payload(payload)
