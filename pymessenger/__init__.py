@@ -10,7 +10,13 @@ class Element(object):
             setattr(self, key, kwargs.get(key))
 
     def to_json(self):
+        return json.dumps(self.to_dict())
+
+    def to_dict(self):
         data = {}
         for key in self.__acceptable_keys:
             data[key] = getattr(self, key)
-        return json.dumps(data)
+        return data
+
+    def __repr__(self):
+        return self.to_json()
