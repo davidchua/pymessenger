@@ -5,13 +5,17 @@ from requests_toolbelt import MultipartEncoder
 DEFAULT_API_VERSION = 2.6
 
 class Bot(object):
-    def __init__(self, access_token, api_version=DEFAULT_API_VERSION):
+    def __init__(self, access_token, api_version=DEFAULT_API_VERSION, app_secret=None):
         self.api_version = api_version
         self.access_token = access_token
         self.base_url = (
             "https://graph.facebook.com"
             "/v{0}/me/messages?access_token={1}"
         ).format(self.api_version, access_token)
+
+        if app_secret is not None:
+            appsecret_proof = generate_appsecret_proof(access_token, app_secret)
+            self.base_url += '&appsecret_proof={0}'.format(appsecret_proof)
 
     def send_text_message(self, recipient_id, message):
         payload = {
