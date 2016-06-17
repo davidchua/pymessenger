@@ -47,7 +47,7 @@ class Bot(object):
                     "type": "template",
                     "payload": {
                         "template_type": "generic",
-                        "elements": [element.to_dict() for element in elements]
+                        "elements": elements
                     }
                 }
             }
