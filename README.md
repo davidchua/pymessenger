@@ -29,13 +29,16 @@ $ pip install pymessenger
 ```python
 from pymessenger.bot import Bot
 
-bot = Bot(<access_token>)
+bot = Bot(<access_token>, <optional: app_secret>)
 bot.send_text_message(recipient_id, message)
 ```
 
 __Note__: From Facebook
 
 > These ids are page-scoped. These ids differ from those returned from Facebook Login apps which are app-scoped. You must use ids retrieved from a Messenger integration for this page in order to function properly.
+
+> If `app_secret` is initialized, an app_secret_proof will be generated and send with every request.
+> Appsecret Proofs helps further secure your client access tokens. You can find out more on the [Facebook Docs](https://developers.facebook.com/docs/graph-api/securing-requests#appsecret_proof)
 
 
 ##### Sending a generic template message:
@@ -56,6 +59,18 @@ bot.send_generic_message(recipient_id, elements)
 Output:
 
 ![Generic Bot Output](https://cloud.githubusercontent.com/assets/68039/14519266/4c7033b2-0250-11e6-81a3-f85f3809d86c.png)
+
+##### Sending an image using an URL:
+
+```python
+from pymessenger.bot import Bot
+bot = Bot(<access_token>)
+image_url = "http://url/to/image.png"
+bot.send_image_url(recipient_id, image_url
+```
+
+__Note__: Images must be in JPG/PNG format only.
+
 
 ### Todo
 

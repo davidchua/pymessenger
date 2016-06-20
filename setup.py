@@ -2,7 +2,7 @@ from setuptools import setup
 setup(
   name = 'pymessenger',
   packages = ['pymessenger'],
-  version = '0.0.4.0',
+  version = '0.0.5.0',
   install_requires=[
         'requests',
         'requests-toolbelt'
@@ -11,7 +11,7 @@ setup(
   author = 'David Chua',
   author_email = 'zhchua@gmail.com',
   url = 'https://github.com/davidchua/pymessenger',
-  download_url = 'https://github.com/davidchua/pymessenger/tarball/0.0.4',
+  download_url = 'https://github.com/davidchua/pymessenger/tarball/0.0.5',
   keywords = ['facebook messenger', 'python', 'wrapper', 'bot', 'messenger bot'],
   classifiers = [],
 )
