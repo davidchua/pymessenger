@@ -66,7 +66,7 @@ Output:
 from pymessenger.bot import Bot
 bot = Bot(<access_token>)
 image_url = "http://url/to/image.png"
-bot.send_image_url(recipient_id, image_url
+bot.send_image_url(recipient_id, image_url)
 ```
 
 __Note__: Images must be in JPG/PNG format only.
