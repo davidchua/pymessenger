@@ -1,9 +1,14 @@
 import json
+import sys, os
+sys.path.append(os.path.realpath(os.path.dirname(__file__)+"/.."))
 
 from pymessenger.user_profile import UserProfileApi
-from test_env import *
 
-upa = UserProfileApi(PAGE_ACCESS_TOKEN, app_secret=APP_SECRET)
+TOKEN = os.environ.get('TOKEN')
+APP_SECRET = os.environ.get('APP_SECRET')
+TEST_USER_ID = os.environ.get('RECIPIENT_ID')
+
+upa = UserProfileApi(TOKEN, app_secret=APP_SECRET)
 
 def test_fields_blank():
     user_profile = upa.get(TEST_USER_ID)
