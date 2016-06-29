@@ -2,7 +2,7 @@ import sys, os
 sys.path.append(os.path.realpath(os.path.dirname(__file__)+"/.."))
 
 from pymessenger.bot import Bot as PyBot
-from pymessenger import Element
+from pymessenger import Element, Button
 
 TOKEN = os.environ.get('TOKEN')
 APP_SECRET = os.environ.get('APP_SECRET')
@@ -40,9 +40,9 @@ def test_image_url():
 
 def test_button_message():
     buttons = []
-    button = dict(title='Arsenal', type='web_url', url='http://arsenal.com')
+    button = Button(title='Arsenal', type='web_url', url='http://arsenal.com')
     buttons.append(button)
-    button = dict(title='Other', type='postback', payload='other')
+    button = Button(title='Other', type='postback', payload='other')
     buttons.append(button)
     text='Select'
     result = bot.send_button_message(recipient_id, text, buttons)
