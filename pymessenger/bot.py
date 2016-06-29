@@ -1,22 +1,16 @@
 import json
+
 import requests
 from requests_toolbelt import MultipartEncoder
+
+from pymessenger.graph_api import FacebookGraphApi
 import pymessenger.utils as utils
 
-DEFAULT_API_VERSION = 2.6
 
-class Bot(object):
-    def __init__(self, access_token, api_version=DEFAULT_API_VERSION, app_secret=None):
-        self.api_version = api_version
-        self.access_token = access_token
-        self.base_url = (
-            "https://graph.facebook.com"
-            "/v{0}/me/messages?access_token={1}"
-        ).format(self.api_version, access_token)
+class Bot(FacebookGraphApi):
 
-        if app_secret is not None:
-            appsecret_proof = utils.generate_appsecret_proof(access_token, app_secret)
-            self.base_url += '&appsecret_proof={0}'.format(appsecret_proof)
+    def __init__(self, *args, **kwargs):
+        super(Bot, self).__init__(*args, **kwargs)
 
     def send_text_message(self, recipient_id, message):
         payload = {
@@ -72,10 +66,6 @@ class Bot(object):
             }
         }
         return self._send_payload(payload)
-
-    def _send_payload(self, payload):
-        result = requests.post(self.base_url, json=payload).json()
-        return result
 
     def send_image(self, recipient_id, image_path):
         '''
@@ -136,3 +126,15 @@ class Bot(object):
             )
         }
         return self._send_payload(payload)
+
+    def _send_payload(self, payload):
+        request_endpoint = '{0}/me/messages'.format(self.graph_url)
+        response = requests.post(
+            request_endpoint,
+            params=self.auth_args,
+            json=payload
+        )
+        result = response.json()
+        return result
+
+
