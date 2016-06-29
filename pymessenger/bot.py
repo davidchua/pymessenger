@@ -1,6 +1,7 @@
 import json
 import requests
 from requests_toolbelt import MultipartEncoder
+import pymessenger.utils as utils
 
 DEFAULT_API_VERSION = 2.6
 
@@ -14,7 +15,7 @@ class Bot(object):
         ).format(self.api_version, access_token)
 
         if app_secret is not None:
-            appsecret_proof = generate_appsecret_proof(access_token, app_secret)
+            appsecret_proof = utils.generate_appsecret_proof(access_token, app_secret)
             self.base_url += '&appsecret_proof={0}'.format(appsecret_proof)
 
     def send_text_message(self, recipient_id, message):
