@@ -30,3 +30,22 @@ def test_elements():
     assert type(result) is dict
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None
+
+def test_image_url():
+    image_url = 'https://lh4.googleusercontent.com/-dZ2LhrpNpxs/AAAAAAAAAAI/AAAAAAAA1os/qrf-VeTVJrg/s0-c-k-no-ns/photo.jpg'
+    result = bot.send_image_url(recipient_id, image_url)
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
+
+def test_button_message():
+    buttons = []
+    button = dict(title='Arsenal', type='web_url', url='http://arsenal.com')
+    buttons.append(button)
+    button = dict(title='Other', type='postback', payload='other')
+    buttons.append(button)
+    text='Select'
+    result = bot.send_button_message(recipient_id, text, buttons)
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
