@@ -5,17 +5,21 @@ in any messages that the bot receives and echos it back.
 from flask import Flask, request
 from pymessenger.bot import Bot
 import requests
-import ipdb
 app = Flask(__name__)
-TOKEN = "<access_token>"
+
+ACCESS_TOKEN = ""
+VERIFY_TOKEN = ""
 bot = Bot(TOKEN)
 
-@app.route("/webhook", methods = ['GET', 'POST'])
+@app.route("/", methods = ['GET', 'POST'])
+
 def hello():
     if request.method == 'GET':
-        if (request.args.get("hub.verify_token") == "<token you define during"\
-                "the verification phase>"):
+        if (request.args.get("hub.verify_token") == VERIFY_TOKEN):
                 return request.args.get("hub.challenge")
+        else:
+            return 'Invalid verification token'
+
     if request.method == 'POST':
         output = request.json
         event = output['entry'][0]['messaging']
@@ -26,7 +30,7 @@ def hello():
                 bot.send_text_message(recipient_id, message)
             else:
                 pass
-        return "success"
+        return "Success"
 
 
 if __name__ == "__main__":
