@@ -1,11 +1,15 @@
 import json
+import six
 
 from .bot import Bot
 
 class Element(dict):
     __acceptable_keys = ['title', 'item_url', 'image_url', 'subtitle', 'buttons']
     def __init__(self, *args, **kwargs):
-        kwargs = {k:v for k, v in kwargs.iteritems() if k in self.__acceptable_keys}
+        if six.PY2:
+            kwargs = {k:v for k, v in kwargs.iteritems() if k in self.__acceptable_keys}
+        else:
+            kwargs = {k:v for k, v in kwargs.items() if k in self.__acceptable_keys}
         super(Element, self).__init__(*args, **kwargs)
 
     def to_json(self):

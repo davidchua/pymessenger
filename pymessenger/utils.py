@@ -1,5 +1,6 @@
 import hashlib
 import hmac
+import six
 
 def validate_hub_signature(app_secret, request_payload, hub_signature_header):
     '''
@@ -31,6 +32,9 @@ def generate_appsecret_proof(access_token, app_secret):
             appsecret_proof: HMAC-SHA256 hash of page access token
                 using app_secret as the key
     '''
-    hmac_object = hmac.new(str(app_secret), unicode(access_token), hashlib.sha256)
+    if six.PY2:
+        hmac_object = hmac.new(str(app_secret), unicode(access_token), hashlib.sha256)
+    else:
+        hmac_object = hmac.new(bytearray(app_secret, 'utf8'), str(access_token).encode('utf8'), hashlib.sha256)
     generated_hash = hmac_object.hexdigest()
     return generated_hash
