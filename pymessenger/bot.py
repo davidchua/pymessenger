@@ -180,7 +180,11 @@ class Bot(FacebookGraphApi):
             'sender_action': action
         }
         return self.send_raw(payload)
-
+        
+    def _send_payload(self, payload):
+        ''' Deprecated, use send_raw instead '''
+        return self.send_raw(payload)
+        
     def send_raw(self, payload):
         request_endpoint = '{0}/me/messages'.format(self.graph_url)
         response = requests.post(
