@@ -1,7 +1,8 @@
 import requests
 
 from pymessenger.graph_api import FacebookGraphApi
-    
+
+
 class UserProfileApi(FacebookGraphApi):
     def get(self, user_id, fields=None):
         params = {}
