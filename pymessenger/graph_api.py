@@ -2,6 +2,7 @@ import pymessenger.utils as utils
 
 DEFAULT_API_VERSION = 2.6
 
+
 class FacebookGraphApi(object):
     def __init__(self, access_token, **kwargs):
         '''
