@@ -23,7 +23,7 @@ This wrapper has the following functions:
 * send_file(recipient_id, file_path)
 * send_file_url(recipient_id, file_url)
 
-You can see the code/documentation for there in [bot.py](pymessenger.bot.py)
+You can see the code/documentation for there in [bot.py](pymessenger/bot.py)
 
 The functions return the full JSON body of the actual API call to Facebook.
 
