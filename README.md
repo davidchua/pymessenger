@@ -1,6 +1,6 @@
-# pymessenger: Python Wrapper for Facebook Messenger Bot API
+# pymessenger
 
-Wrapper for [Facebook's Messenger Platform](https://developers.facebook.com/docs/messenger-platform).
+Python Wrapper for [Facebook's Messenger Platform](https://developers.facebook.com/docs/messenger-platform).
 
 __Disclaimer__: This wrapper is __NOT__ an official wrapper and do not attempt to represent Facebook in anyway.
 
