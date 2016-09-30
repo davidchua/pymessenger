@@ -162,7 +162,6 @@ class Bot(FacebookGraphApi):
 
     def send_action(self, recipient_id, action):
         """Send typing indicators or send read receipts to the specified recipient.
-        Image must be PNG or JPEG.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/sender-actions
 
         Input:

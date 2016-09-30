@@ -1,4 +1,4 @@
-## Python Wrapper for Facebook Send/Receive API
+# pymessenger: Python Wrapper for Facebook Messenger Bot API
 
 Wrapper for [Facebook's Messenger Platform](https://developers.facebook.com/docs/messenger-platform).
 
