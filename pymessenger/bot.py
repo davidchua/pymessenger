@@ -375,3 +375,19 @@ class Bot(FacebookGraphApi):
     def _send_payload(self, payload):
         """ Deprecated, use send_raw instead """
         return self.send_raw(payload)
+    
+    def get_user_info(self, recipient_id):
+         """Getting information about the user
+        https://developers.facebook.com/docs/messenger-platform/user-profile
+        Input:
+            recipient_id: recipient id to send to
+        Output:
+            Response from API as <dict>
+        """
+        request_endpoint = '{0}/{1}'.format(self.graph_url, recipient_id)
+        response = requests.get(
+            request_endpoint,
+            params=self.auth_args
+        )
+        result = response.json()
+        return result
