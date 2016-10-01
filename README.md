@@ -1,4 +1,4 @@
-# pymessenger
+# pymessenger [![Build Status](https://travis-ci.org/davidchua/pymessenger.svg?branch=master)](https://travis-ci.org/davidchua/pymessenger)
 
 Python Wrapper for [Facebook's Messenger Platform](https://developers.facebook.com/docs/messenger-platform).
 
