@@ -178,8 +178,6 @@ class Bot(FacebookGraphApi):
         }
         return self.send_raw(payload)
 
-
-
     def send_audio(self, recipient_id, audio_path):
         """Send audio to the specified recipient.
         Audio must be MP3 or WAV
