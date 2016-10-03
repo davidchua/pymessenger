@@ -1,14 +1,40 @@
 import json
+import os
 
 import requests
 from requests_toolbelt import MultipartEncoder
 
-from pymessenger.graph_api import FacebookGraphApi
+from pymessenger import utils
+
+DEFAULT_API_VERSION = 2.6
 
 
-class Bot(FacebookGraphApi):
-    def __init__(self, *args, **kwargs):
-        super(Bot, self).__init__(*args, **kwargs)
+class Bot:
+    def __init__(self, access_token, **kwargs):
+        """
+            @required:
+                access_token
+            @optional:
+                api_version
+                app_secret
+        """
+
+        self.api_version = kwargs.get('api_version') or DEFAULT_API_VERSION
+        self.app_secret = kwargs.get('app_secret')
+        self.graph_url = 'https://graph.facebook.com/v{0}'.format(self.api_version)
+        self.access_token = access_token
+
+    @property
+    def auth_args(self):
+        if not hasattr(self, '_auth_args'):
+            auth = {
+                'access_token': self.access_token
+            }
+            if self.app_secret is not None:
+                appsecret_proof = utils.generate_appsecret_proof(self.access_token, self.app_secret)
+                auth['appsecret_proof'] = appsecret_proof
+            self._auth_args = auth
+        return self._auth_args
 
     def send_text_message(self, recipient_id, message):
         """Send text messages to the specified recipient.
@@ -99,13 +125,12 @@ class Bot(FacebookGraphApi):
         }
         return self.send_raw(payload)
 
-    def send_image(self, recipient_id, image_path):
-        """Send an image to the specified recipient.
-        Image must be PNG or JPEG or GIF (more might be supported).
-        https://developers.facebook.com/docs/messenger-platform/send-api-reference/image-attachment
+    def send_attachment(self, recipient_id, attachment_type, attachment_path):
+        """Send an attachment to the specified recipient using local path.
         Input:
             recipient_id: recipient id to send to
-            image_path: path to image to be sent
+            attachment_type: type of attachment (image, video, audio, file)
+            attachment_path: Path of attachment
         Output:
             Response from API as <dict>
         """
@@ -118,18 +143,58 @@ class Bot(FacebookGraphApi):
             'message': json.dumps(
                 {
                     'attachment': {
-                        'type': 'image',
+                        'type': attachment_type,
                         'payload': {}
                     }
                 }
             ),
-            'filedata': (image_path, open(image_path, 'rb'))
+            'filedata': (os.path.basename(attachment_path), open(attachment_path, 'rb'))
         }
         multipart_data = MultipartEncoder(payload)
         multipart_header = {
             'Content-Type': multipart_data.content_type
         }
-        return requests.post(self.base_url, data=multipart_data, headers=multipart_header).json()
+        return requests.post(self.graph_url, data=multipart_data, params=self.auth_args,
+                             headers=multipart_header).json()
+
+    def send_attachment_url(self, recipient_id, attachment_type, attachment_url):
+        """Send an attachment to the specified recipient using URL.
+        Input:
+            recipient_id: recipient id to send to
+            attachment_type: type of attachment (image, video, audio, file)
+            attachment_url: URL of attachment
+        Output:
+            Response from API as <dict>
+        """
+        payload = {
+            'recipient':
+                {
+                    'id': recipient_id
+                },
+            'message':
+                {
+                    'attachment': {
+                        'type': attachment_type,
+                        'payload': {
+                            'url': attachment_url
+                        }
+                    }
+                }
+        }
+
+        return self.send_raw(payload)
+
+    def send_image(self, recipient_id, image_path):
+        """Send an image to the specified recipient.
+        Image must be PNG or JPEG or GIF (more might be supported).
+        https://developers.facebook.com/docs/messenger-platform/send-api-reference/image-attachment
+        Input:
+            recipient_id: recipient id to send to
+            image_path: path to image to be sent
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_attachment(recipient_id, "image", image_path)
 
     def send_image_url(self, recipient_id, image_url):
         """Send an image to specified recipient using URL.
@@ -141,24 +206,77 @@ class Bot(FacebookGraphApi):
         Output:
             Response from API as <dict>
         """
-        payload = {
-            'recipient': json.dumps(
-                {
-                    'id': recipient_id
-                }
-            ),
-            'message': json.dumps(
-                {
-                    'attachment': {
-                        'type': 'image',
-                        'payload': {
-                            'url': image_url
-                        }
-                    }
-                }
-            )
-        }
-        return self.send_raw(payload)
+        return self.send_attachment_url(recipient_id, "image", image_url)
+
+    def send_audio(self, recipient_id, audio_path):
+        """Send audio to the specified recipient.
+        Audio must be MP3 or WAV
+        https://developers.facebook.com/docs/messenger-platform/send-api-reference/audio-attachment
+        Input:
+            recipient_id: recipient id to send to
+            audio_path: path to audio to be sent
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_attachment(recipient_id, "image", image_path)
+
+    def send_audio_url(self, recipient_id, audio_url):
+        """Send audio to specified recipient using URL.
+        Audio must be MP3 or WAV
+        https://developers.facebook.com/docs/messenger-platform/send-api-reference/audio-attachment
+        Input:
+            recipient_id: recipient id to send to
+            audio_url: url of audio to be sent
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_attachment_url(recipient_id, "audio", audio_url)
+
+    def send_video(self, recipient_id, video_path):
+        """Send video to the specified recipient.
+        Video should be MP4 or MOV, but supports more (https://www.facebook.com/help/218673814818907).
+        https://developers.facebook.com/docs/messenger-platform/send-api-reference/video-attachment
+        Input:
+            recipient_id: recipient id to send to
+            video_path: path to video to be sent
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_attachment(recipient_id, "video", video_path)
+
+    def send_video_url(self, recipient_id, video_url):
+        """Send video to specified recipient using URL.
+        Video should be MP4 or MOV, but supports more (https://www.facebook.com/help/218673814818907).
+        https://developers.facebook.com/docs/messenger-platform/send-api-reference/video-attachment
+        Input:
+            recipient_id: recipient id to send to
+            video_url: url of video to be sent
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_attachment_url(recipient_id, "video", video_url)
+
+    def send_file(self, recipient_id, file_path):
+        """Send file to the specified recipient.
+        https://developers.facebook.com/docs/messenger-platform/send-api-reference/file-attachment
+        Input:
+            recipient_id: recipient id to send to
+            file_path: path to file to be sent
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_attachment(recipient_id, "file", file_path)
+
+    def send_file_url(self, recipient_id, file_url):
+        """Send file to the specified recipient.
+        https://developers.facebook.com/docs/messenger-platform/send-api-reference/file-attachment
+        Input:
+            recipient_id: recipient id to send to
+            file_url: url of file to be sent
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_attachment_url(recipient_id, "file", file_url)
 
     def send_action(self, recipient_id, action):
         """Send typing indicators or send read receipts to the specified recipient.
@@ -178,186 +296,26 @@ class Bot(FacebookGraphApi):
         }
         return self.send_raw(payload)
 
-    def send_audio(self, recipient_id, audio_path):
-        """Send audio to the specified recipient.
-        Audio must be MP3 or WAV
-        https://developers.facebook.com/docs/messenger-platform/send-api-reference/audio-attachment
+    def get_user_info(self, recipient_id, fields=None):
+        """Getting information about the user
+        https://developers.facebook.com/docs/messenger-platform/user-profile
         Input:
-            recipient_id: recipient id to send to
-            audio_path: path to audio to be sent
+          recipient_id: recipient id to send to
         Output:
-            Response from API as <dict>
+          Response from API as <dict>
         """
-        payload = {
-            'recipient': json.dumps(
-                {
-                    'id': recipient_id
-                }
-            ),
-            'message': json.dumps(
-                {
-                    'attachment': {
-                        'type': 'audio',
-                        'payload': {}
-                    }
-                }
-            ),
-            'filedata': (audio_path, open(audio_path, 'rb'))
-        }
-        multipart_data = MultipartEncoder(payload)
-        multipart_header = {
-            'Content-Type': multipart_data.content_type
-        }
-        return requests.post(self.base_url, data=multipart_data, headers=multipart_header).json()
+        params = {}
+        if fields is not None and isinstance(fields, (list, tuple)):
+            params['fields'] = ",".join(fields)
 
-    def send_audio_url(self, recipient_id, audio_url):
-        """Send audio to specified recipient using URL.
-        Audio must be MP3 or WAV
-        https://developers.facebook.com/docs/messenger-platform/send-api-reference/audio-attachment
-        Input:
-            recipient_id: recipient id to send to
-            audio_url: url of audio to be sent
-        Output:
-            Response from API as <dict>
-        """
-        payload = {
-            'recipient': json.dumps(
-                {
-                    'id': recipient_id
-                }
-            ),
-            'message': json.dumps(
-                {
-                    'attachment': {
-                        'type': 'audio',
-                        'payload': {
-                            'url': audio_url
-                        }
-                    }
-                }
-            )
-        }
-        return self.send_raw(payload)
+        params.update(self.auth_args)
 
-    def send_video(self, recipient_id, video_path):
-        """Send video to the specified recipient.
-        Video should be MP4 or MOV, but supports more (https://www.facebook.com/help/218673814818907).
-        https://developers.facebook.com/docs/messenger-platform/send-api-reference/video-attachment
-        Input:
-            recipient_id: recipient id to send to
-            video_path: path to video to be sent
-        Output:
-            Response from API as <dict>
-        """
-        payload = {
-            'recipient': json.dumps(
-                {
-                    'id': recipient_id
-                }
-            ),
-            'message': json.dumps(
-                {
-                    'attachment': {
-                        'type': 'video',
-                        'payload': {}
-                    }
-                }
-            ),
-            'filedata': (video_path, open(video_path, 'rb'))
-        }
-        multipart_data = MultipartEncoder(payload)
-        multipart_header = {
-            'Content-Type': multipart_data.content_type
-        }
-        return requests.post(self.base_url, data=multipart_data, headers=multipart_header).json()
+        request_endpoint = '{0}/{1}'.format(self.graph_url, recipient_id)
+        response = requests.get(request_endpoint, params=params)
+        if response.status_code == 200:
+            return response.json()
 
-    def send_video_url(self, recipient_id, video_url):
-        """Send video to specified recipient using URL.
-        Video should be MP4 or MOV, but supports more (https://www.facebook.com/help/218673814818907).
-        https://developers.facebook.com/docs/messenger-platform/send-api-reference/video-attachment
-        Input:
-            recipient_id: recipient id to send to
-            video_url: url of video to be sent
-        Output:
-            Response from API as <dict>
-        """
-        payload = {
-            'recipient': json.dumps(
-                {
-                    'id': recipient_id
-                }
-            ),
-            'message': json.dumps(
-                {
-                    'attachment': {
-                        'type': 'video',
-                        'payload': {
-                            'url': video_url
-                        }
-                    }
-                }
-            )
-        }
-        return self.send_raw(payload)
-
-    def send_file(self, recipient_id, file_path):
-        """Send file to the specified recipient.
-        https://developers.facebook.com/docs/messenger-platform/send-api-reference/file-attachment
-        Input:
-            recipient_id: recipient id to send to
-            file_path: path to file to be sent
-        Output:
-            Response from API as <dict>
-        """
-        payload = {
-            'recipient': json.dumps(
-                {
-                    'id': recipient_id
-                }
-            ),
-            'message': json.dumps(
-                {
-                    'attachment': {
-                        'type': 'file',
-                        'payload': {}
-                    }
-                }
-            ),
-            'filedata': (file_path, open(file_path, 'rb'))
-        }
-        multipart_data = MultipartEncoder(payload)
-        multipart_header = {
-            'Content-Type': multipart_data.content_type
-        }
-        return requests.post(self.base_url, data=multipart_data, headers=multipart_header).json()
-
-    def send_file_url(self, recipient_id, file_url):
-        """Send file to the specified recipient.
-        https://developers.facebook.com/docs/messenger-platform/send-api-reference/file-attachment
-        Input:
-            recipient_id: recipient id to send to
-            file_url: url of file to be sent
-        Output:
-            Response from API as <dict>
-        """
-        payload = {
-            'recipient': json.dumps(
-                {
-                    'id': recipient_id
-                }
-            ),
-            'message': json.dumps(
-                {
-                    'attachment': {
-                        'type': 'file',
-                        'payload': {
-                            'url': file_url
-                        }
-                    }
-                }
-            )
-        }
-        return self.send_raw(payload)
+        return None
 
     def send_raw(self, payload):
         request_endpoint = '{0}/me/messages'.format(self.graph_url)

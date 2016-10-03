@@ -1,6 +1,6 @@
 # pymessenger [![Build Status](https://travis-ci.org/davidchua/pymessenger.svg?branch=master)](https://travis-ci.org/davidchua/pymessenger)
 
-Python Wrapper for [Facebook's Messenger Platform](https://developers.facebook.com/docs/messenger-platform).
+Python Wrapper for [Facebook Messenger Platform](https://developers.facebook.com/docs/messenger-platform).
 
 __Disclaimer__: This wrapper is __NOT__ an official wrapper and do not attempt to represent Facebook in anyway.
 
@@ -12,18 +12,20 @@ This wrapper has the following functions:
 * send_message(recipient_id, message)
 * send_generic_message(recipient_id, elements)
 * send_button_message(recipient_id, text, buttons)
+* send_attachment(recipient_id, attachment_type, attachment_path)
+* send_attachment_url(recipient_id, attachment_type, attachment_url)
 * send_image(recipient_id, image_path)
 * send_image_url(recipient_id, image_url)
-* send_action(recipient_id, action)
-* send_raw(payload)
 * send_audio(recipient_id, audio_path)
 * send_audio_url(recipient_id, audio_url)
 * send_video(recipient_id, video_path)
 * send_video_url(recipient_id, video_url)
 * send_file(recipient_id, file_path)
 * send_file_url(recipient_id, file_url)
+* send_action(recipient_id, action)
+* send_raw(payload)
 
-You can see the code/documentation for there in [bot.py](pymessenger/bot.py)
+You can see the code/documentation for there in [bot.py](pymessenger/bot.py).
 
 The functions return the full JSON body of the actual API call to Facebook.
 
