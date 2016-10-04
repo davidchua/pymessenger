@@ -7,6 +7,7 @@ TOKEN = os.environ.get('TOKEN')
 APP_SECRET = os.environ.get('APP_SECRET')
 
 bot = Bot(TOKEN, app_secret=APP_SECRET)
+
 recipient_id = os.environ.get('RECIPIENT_ID')
 
 
