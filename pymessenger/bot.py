@@ -46,7 +46,7 @@ class Bot:
         payload['recipient'] = {
             'id': recipient_id
         }
-        payload['notification_type'] = notification_type.name
+        payload['notification_type'] = notification_type.value
         return self.send_raw(payload)
 
     def send_message(self, recipient_id, message, notification_type=NotificationType.regular):
