@@ -21,7 +21,7 @@ def hello():
             return 'Invalid verification token'
 
     if request.method == 'POST':
-        output = request.json()
+        output = request.get_json()
         for event in output['entry']:
             messaging = event['messaging']
             for x in messaging:
