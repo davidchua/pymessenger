@@ -21,3 +21,6 @@ class Element(dict):
 class Button(dict):
     # TODO: Decide if this should do more
     pass
+
+# class Receipt:
+#     pass

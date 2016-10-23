@@ -1,2 +1,0 @@
-class Receipt:
-    pass

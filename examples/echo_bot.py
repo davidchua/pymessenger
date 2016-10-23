@@ -25,10 +25,14 @@ def hello():
         for event in output['entry']:
             messaging = event['messaging']
             for x in messaging:
-                if x.get('message') and x['message'].get('text'):
-                    message = x['message']['text']
+                if x.get('message'):
                     recipient_id = x['sender']['id']
-                    bot.send_text_message(recipient_id, message)
+                    if x['message'].get('text'):
+                        message = x['message']['text']
+                        bot.send_text_message(recipient_id, message)
+                    if x['message'].get('attachment'):
+                        bot.send_attachment_url(recipient_id, x['message']['attachment']['type'],
+                                                x['message']['attachment']['payload']['url'])
                 else:
                     pass
         return "Success"
