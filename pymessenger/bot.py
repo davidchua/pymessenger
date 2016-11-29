@@ -1,6 +1,7 @@
 import os
 from enum import Enum
 
+import logging
 import requests
 from requests_toolbelt import MultipartEncoder
 
@@ -85,8 +86,11 @@ class Bot:
         multipart_header = {
             'Content-Type': multipart_data.content_type
         }
-        return requests.post(self.graph_url, data=multipart_data,
-                             params=self.auth_args, headers=multipart_header).json()
+        response = requests.post(self.graph_url, data=multipart_data,
+                                 params=self.auth_args, headers=multipart_header).json()
+
+        logging.info(response)
+        return response
 
     def send_attachment_url(self, recipient_id, attachment_type, attachment_url,
                             notification_type=NotificationType.regular):
@@ -285,7 +289,9 @@ class Bot:
         request_endpoint = '{0}/{1}'.format(self.graph_url, recipient_id)
         response = requests.get(request_endpoint, params=params)
         if response.status_code == 200:
-            return response.json()
+            result = response.json()
+            logging.info(result)
+            return result
 
         return None
 
@@ -297,6 +303,7 @@ class Bot:
             json=payload
         )
         result = response.json()
+        logging.info(result)
         return result
 
     def _send_payload(self, payload):
