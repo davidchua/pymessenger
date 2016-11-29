@@ -303,6 +303,7 @@ class Bot:
             json=payload
         )
         result = response.json()
+        logging.warning('Sent payload %s' % payload)
         logging.info(result)
         return result
 
