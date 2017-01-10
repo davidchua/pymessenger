@@ -24,6 +24,7 @@ This wrapper has the following functions:
 * send_file_url(recipient_id, file_url)
 * send_action(recipient_id, action)
 * send_raw(payload)
+* get_user_info(recipient_id)
 
 You can see the code/documentation for there in [bot.py](pymessenger/bot.py).
 
