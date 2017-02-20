@@ -1,4 +1,4 @@
-# pymessenger [![Build Status](https://travis-ci.org/davidchua/pymessenger.svg?branch=master)](https://travis-ci.org/davidchua/pymessenger)
+# pymessenger2 [![Build Status](https://travis-ci.org/Cretezy/pymessenger2.svg?branch=master)](https://travis-ci.org/Cretezy/pymessenger2)
 
 Python Wrapper for [Facebook Messenger Platform](https://developers.facebook.com/docs/messenger-platform).
 
@@ -39,13 +39,13 @@ You'll need to setup a [Facebook App](https://developers.facebook.com/apps/), Fa
 ### Installation
 
 ```bash
-pip install pymessenger
+pip install pymessenger2
 ```
 
 ### Usage
 
 ```python
-from pymessenger.bot import Bot
+from pymessenger2.bot import Bot
 
 bot = Bot(<access_token>, [optional: app_secret])
 bot.send_text_message(recipient_id, message)
