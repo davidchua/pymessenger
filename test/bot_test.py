@@ -1,7 +1,7 @@
 import os
 
-from pymessenger2.bot import Bot
 from pymessenger2 import Element, Button
+from pymessenger2.bot import Bot
 
 TOKEN = os.environ.get('TOKEN')
 APP_SECRET = os.environ.get('APP_SECRET')
@@ -42,7 +42,8 @@ def test_image_url():
     assert type(result) is dict
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None
-    
+
+
 def test_image_gif_url():
     image_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
     result = bot.send_image_url(recipient_id, image_url)
