@@ -1,7 +1,7 @@
 import os
 
-from pymessenger.bot import Bot
-from pymessenger import Element, Button
+from pymessenger2.bot import Bot
+from pymessenger2 import Element, Button
 
 TOKEN = os.environ.get('TOKEN')
 APP_SECRET = os.environ.get('APP_SECRET')
