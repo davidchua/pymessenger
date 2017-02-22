@@ -1,0 +1,4 @@
+[Default]
+bears = YapfBear
+files = **.py
+default_actions = *: ApplyPatchAction

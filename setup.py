@@ -1,10 +1,6 @@
 from setuptools import setup
 
-installation_requirements = [
-    'requests',
-    'requests-toolbelt',
-    'six'
-]
+installation_requirements = ['requests', 'requests-toolbelt', 'six']
 
 try:
     import enum
@@ -23,6 +19,7 @@ setup(
     url='https://github.com/Cretezy/pymessenger2',
     license='MIT',
     download_url='https://github.com/Cretezy/pymessenger2/archive/v2.0.0.tar.gz',
-    keywords=['facebook messenger', 'python', 'wrapper', 'bot', 'messenger bot'],
-    classifiers=[],
-)
+    keywords=[
+        'facebook messenger', 'python', 'wrapper', 'bot', 'messenger bot'
+    ],
+    classifiers=[], )
