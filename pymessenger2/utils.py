@@ -44,3 +44,15 @@ def generate_appsecret_proof(access_token, app_secret):
             str(access_token).encode('utf8'), hashlib.sha256)
     generated_hash = hmac_object.hexdigest()
     return generated_hash
+
+
+class ToJsonMixin:
+    """
+    Derive from this with an `.asdict` member to get a working `to_json`
+    function!
+    """
+    def to_json(self):
+        items_iterator = (attr.asdict(self).items()
+                          if six.PY3 else
+                          attr.asdict(self).iteritems())
+        return json.dumps({k: v for k, v in items_iterator if v is not None})
