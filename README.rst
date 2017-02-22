@@ -88,6 +88,7 @@ Sending a generic template message:
 .. code:: python
 
     from pymessenger2.bot import Bot
+    from pymessenger2 import Element
     bot = Bot(<access_token>)
     elements = []
     element = Element(title="test", image_url="<arsenal_logo.png>", subtitle="subtitle", item_url="http://arsenal.com")
