@@ -87,7 +87,7 @@ Sending a generic template message:
 
 .. code:: python
 
-    from pymessenger.bot import Bot
+    from pymessenger2.bot import Bot
     bot = Bot(<access_token>)
     elements = []
     element = Element(title="test", image_url="<arsenal_logo.png>", subtitle="subtitle", item_url="http://arsenal.com")
@@ -107,7 +107,7 @@ Sending an image/video/file using an URL:
 
 .. code:: python
 
-    from pymessenger.bot import Bot
+    from pymessenger2.bot import Bot
     bot = Bot(<access_token>)
     image_url = "http://url/to/image.png"
     bot.send_image_url(recipient_id, image_url)
