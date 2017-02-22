@@ -2,3 +2,4 @@ pytest
 requests
 requests-toolbelt
 six
+attrs

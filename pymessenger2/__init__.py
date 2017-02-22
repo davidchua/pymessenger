@@ -2,34 +2,33 @@ import json
 
 import six
 
+import attr
+
 from .bot import Bot
 
 
-class Element(dict):
-    __acceptable_keys = [
-        'title', 'item_url', 'image_url', 'subtitle', 'buttons'
-    ]
-
-    def __init__(self, *args, **kwargs):
-        if six.PY2:
-            kwargs = {
-                k: v
-                for k, v in kwargs.iteritems() if k in self.__acceptable_keys
-            }
-        else:
-            kwargs = {
-                k: v
-                for k, v in kwargs.items() if k in self.__acceptable_keys
-            }
-        super(Element, self).__init__(*args, **kwargs)
-
+class ToJsonMixin:
+    """
+    Derive from this with an `.asdict` member to get a working `to_json` 
+    function!
+    """
     def to_json(self):
-        return json.dumps(
-            {k: v
-             for k, v in self.iteritems() if k in self.__acceptable_keys})
+        items_iterator = (attr.asdict(self).items()
+                          if six.PY3 else
+                          attr.asdict(self).iteritems())
+        return json.dumps({k: v for k, v in items_iterator if v is not None})
 
 
-class Button(dict):
+@attr.s
+class Element(ToJsonMixin):
+    title = attr.ib()
+    item_url = attr.ib(default=None)
+    image_url = attr.ib(default=None)
+    subtitle = attr.ib(default=None)
+    buttons = attr.ib(default=None)
+
+
+class Button(ToJsonMixin):
     # TODO: Decide if this should do more
     pass
 
