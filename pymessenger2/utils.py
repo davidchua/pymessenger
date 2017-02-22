@@ -1,6 +1,8 @@
 import hashlib
 import hmac
 import six
+import attr
+import json
 
 
 def validate_hub_signature(app_secret, request_payload, hub_signature_header):
