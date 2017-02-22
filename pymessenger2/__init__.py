@@ -5,6 +5,12 @@ from .airline import *
 
 
 @attr.s
+class Template:
+    payload = attr.ib()
+    type = attr.ib(default='template')
+
+
+@attr.s
 class Element:
     title = attr.ib()
     item_url = attr.ib(default=None)
