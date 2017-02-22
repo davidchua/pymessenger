@@ -16,7 +16,10 @@ class NotificationType(Enum):
 
 
 class Bot:
-    def __init__(self, access_token, **kwargs):
+    def __init__(self,
+                 access_token,
+                 api_version=DEFAULT_API_VERSION,
+                 app_secret=None):
         """
             @required:
                 access_token
@@ -24,9 +27,8 @@ class Bot:
                 api_version
                 app_secret
         """
-
-        self.api_version = kwargs.get('api_version') or DEFAULT_API_VERSION
-        self.app_secret = kwargs.get('app_secret')
+        self.api_version = api_version
+        self.app_secret = app_secret
         self.graph_url = 'https://graph.facebook.com/v{0}'.format(
             self.api_version)
         self.access_token = access_token
