@@ -11,11 +11,15 @@ except ImportError:
 with open('README.rst') as readme:
     long_description = readme.read()
 
+with open('requirements.txt') as requirements:
+    required = requirements.read().splitlines()
+
+
 setup(
     name='pymessenger2',
     packages=['pymessenger2'],
     version='2.0.0',
-    install_requires=installation_requirements,
+    install_requires=required,
     description="Python Wrapper for Facebook Messenger Platform",
     long_description=long_description,
     author='Charles Crete',
