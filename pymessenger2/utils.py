@@ -48,13 +48,11 @@ def generate_appsecret_proof(access_token, app_secret):
     return generated_hash
 
 
-class ToJsonMixin:
-    """
-    Derive from this with an `.asdict` member to get a working `to_json`
-    function!
-    """
-    def to_json(self):
-        items_iterator = (attr.asdict(self).items()
-                          if six.PY3 else
-                          attr.asdict(self).iteritems())
-        return json.dumps({k: v for k, v in items_iterator if v is not None})
+class AttrsEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, '__attrs_attrs__'):
+            items_iterator = (attr.asdict(obj).items()
+                              if six.PY3 else
+                              attr.asdict(obj).iteritems())
+            return {k: v for k, v in items_iterator if v is not None}
+        return json.JSONEncoder.default(self, obj)

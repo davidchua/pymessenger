@@ -1,11 +1,10 @@
 from .bot import Bot
-from .utils import ToJsonMixin
 
 from .buttons import *
 
 
 @attr.s
-class Element(ToJsonMixin):
+class Element:
     title = attr.ib()
     item_url = attr.ib(default=None)
     image_url = attr.ib(default=None)
@@ -14,7 +13,7 @@ class Element(ToJsonMixin):
 
 
 @attr.s
-class QuickReply(ToJsonMixin):
+class QuickReply:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/quick-replies
 

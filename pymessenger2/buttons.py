@@ -1,10 +1,8 @@
 import attr
 
-from .utils import ToJsonMixin
-
 
 @attr.s
-class PostbackButton(ToJsonMixin):
+class PostbackButton:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/postback-button
     """
@@ -20,7 +18,7 @@ class PostbackButton(ToJsonMixin):
 
 
 @attr.s
-class CallButton(ToJsonMixin):
+class CallButton:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/postback-button
     """
@@ -40,7 +38,7 @@ class CallButton(ToJsonMixin):
 
 
 @attr.s
-class URLButton(ToJsonMixin):
+class URLButton:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/url-button
     """
@@ -57,7 +55,7 @@ class URLButton(ToJsonMixin):
 
 
 @attr.s
-class ShareButton(ToJsonMixin):
+class ShareButton:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/share-button
     """

@@ -1,10 +1,12 @@
 import os
 from enum import Enum
 
+import json
 import requests
 from requests_toolbelt import MultipartEncoder
 
 from pymessenger2 import utils
+from pymessenger2.utils import AttrsEncoder
 
 DEFAULT_API_VERSION = 2.6
 
@@ -344,7 +346,10 @@ class Bot:
     def send_raw(self, payload):
         request_endpoint = '{0}/me/messages'.format(self.graph_url)
         response = requests.post(
-            request_endpoint, params=self.auth_args, json=payload)
+            request_endpoint,
+            params=self.auth_args,
+            data=json.dumps(payload, cls=AttrsEncoder),
+            headers={'Content-Type': 'application/json'})
         result = response.json()
         return result
 
