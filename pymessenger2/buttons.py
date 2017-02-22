@@ -9,12 +9,14 @@ class PostbackButton(ToJsonMixin):
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/postback-button
     """
     title = attr.ib()
-    payload = attr.ib()
+    payload = attr.ib(default=None)
     type = attr.ib(default='postback')
 
     def __attrs_post_init__(self):
         assert self.type == 'postback', 'Type of a button can\'t be set ' \
                                         'manually.'
+        if not self.payload:
+            self.payload = self.title
 
 
 @attr.s
