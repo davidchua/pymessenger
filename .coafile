@@ -1,4 +1,9 @@
-[Default]
+[python]
 bears = YapfBear
 files = **.py
 default_actions = *: ApplyPatchAction
+
+[spacing]
+bears = SpaceConsistencyBear
+files = **.(py|yml|md|txt|cfg)
+use_spaces = yeah

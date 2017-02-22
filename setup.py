@@ -11,7 +11,6 @@ except ImportError:
 with open('README.rst') as readme:
     long_description = readme.read()
 
-
 setup(
     name='pymessenger2',
     packages=['pymessenger2'],
