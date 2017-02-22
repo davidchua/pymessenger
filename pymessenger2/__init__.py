@@ -30,3 +30,15 @@ class QuickReply:
 
         if not self.payload:
             self.payload = self.title
+
+
+@attr.s
+class ListElement:
+    """
+    See https://developers.facebook.com/docs/messenger-platform/send-api-reference/list-template
+    """
+    title = attr.ib()
+    subtitle = attr.ib(default=None)
+    image_url = attr.ib(default=None)
+    default_action = attr.ib(default=None)
+    buttons = attr.ib(default=None)  # Only one button allowed though
