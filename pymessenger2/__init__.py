@@ -1,6 +1,7 @@
 from .bot import Bot
 
 from .buttons import *
+from .airline import *
 
 
 @attr.s
