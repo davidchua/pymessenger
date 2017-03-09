@@ -28,7 +28,7 @@ class PassengerInfo:
     """
     passenger_id = attr.ib(convert=str)
     name = attr.ib(convert=str)
-    ticket_number = attr.ib(convert=str, default=None)
+    ticket_number = attr.ib(default=None)
 
 
 @attr.s
@@ -43,7 +43,7 @@ class FlightInfo:
     arrival_airport = attr.ib()
     flight_schedule = attr.ib()
     travel_class = attr.ib(convert=str)
-    aircraft_type = attr.ib(convert=str, default=None)
+    aircraft_type = attr.ib(default=None)
 
 
 @attr.s
@@ -55,7 +55,7 @@ class FlightSchedule:
     """
     departure_time = attr.ib(convert=str)
     arrival_time = attr.ib(convert=str)
-    boarding_time = attr.ib(convert=str, default=None)
+    boarding_time = attr.ib(default=None)
 
 
 @attr.s
@@ -65,8 +65,8 @@ class Airport:
     """
     airport_code = attr.ib(convert=str)
     city = attr.ib(convert=str)
-    terminal = attr.ib(convert=str, default=None)
-    gate = attr.ib(convert=str, default=None)
+    terminal = attr.ib(default=None)
+    gate = attr.ib(default=None)
 
 
 @attr.s
@@ -78,7 +78,7 @@ class PassengerSegmentInfo:
     passenger_id = attr.ib(convert=str)
     seat = attr.ib(convert=str)
     seat_type = attr.ib(convert=str)
-    product_info = attr.ib(convert=str, default=None)
+    product_info = attr.ib(default=None)
 
 
 @attr.s
@@ -88,4 +88,4 @@ class PriceInfo:
     """
     title = attr.ib(convert=str)
     amount = attr.ib(convert=int)
-    currency = attr.ib(convert=str, default=None)
+    currency = attr.ib(default=None)

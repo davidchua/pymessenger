@@ -54,5 +54,5 @@ class AttrsEncoder(json.JSONEncoder):
             items_iterator = (attr.asdict(obj).items()
                               if six.PY3 else
                               attr.asdict(obj).iteritems())
-            return {k: v for k, v in items_iterator if v is not 'None'}
+            return {k: v for k, v in items_iterator if v is not None}
         return json.JSONEncoder.default(self, obj)
