@@ -1,6 +1,7 @@
 import attr
 
 
+@attr.s
 class AirlineItinerary:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template
@@ -20,6 +21,7 @@ class AirlineItinerary:
     template_type = attr.ib(default='airline_itinerary')
 
 
+@attr.s
 class PassengerInfo:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#passenger_info
@@ -29,6 +31,7 @@ class PassengerInfo:
     ticket_number = attr.ib(convert=str, default=None)
 
 
+@attr.s
 class FlightInfo:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#flight_info
@@ -43,6 +46,7 @@ class FlightInfo:
     aircraft_type = attr.ib(convert=str, default=None)
 
 
+@attr.s
 class FlightSchedule:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#flight_schedule
@@ -54,6 +58,7 @@ class FlightSchedule:
     boarding_time = attr.ib(convert=str, default=None)
 
 
+@attr.s
 class Airport:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#airport
@@ -64,6 +69,7 @@ class Airport:
     gate = attr.ib(convert=str, default=None)
 
 
+@attr.s
 class PassengerSegmentInfo:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#passenger_segment_info
@@ -75,6 +81,7 @@ class PassengerSegmentInfo:
     product_info = attr.ib(convert=str, default=None)
 
 
+@attr.s
 class PriceInfo:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#price_info
