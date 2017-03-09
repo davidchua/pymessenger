@@ -36,7 +36,7 @@ class FlightInfo:
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#flight_info
     """
-    conection_id = attr.ib(convert=str)
+    connection_id = attr.ib(convert=str)
     segment_id = attr.ib(convert=str)
     flight_number = attr.ib(convert=str)
     departure_airport = attr.ib()
