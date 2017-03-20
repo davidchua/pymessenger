@@ -27,8 +27,11 @@ def test_text_message():
 def test_elements():
     image_url = 'https://lh4.googleusercontent.com/-dZ2LhrpNpxs/AAAAAAAAAAI/AAAAAAAA1os/qrf-VeTVJrg/s0-c-k-no-ns/photo.jpg'
     elements = []
-    element = Element(title="Arsenal", image_url=image_url, subtitle="Click to go to Arsenal website.",
-                      item_url="http://arsenal.com")
+    element = Element(
+        title="Arsenal",
+        image_url=image_url,
+        subtitle="Click to go to Arsenal website.",
+        item_url="http://arsenal.com")
     elements.append(element)
     result = bot.send_generic_message(recipient_id, elements)
     assert type(result) is dict
