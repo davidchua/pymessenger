@@ -42,11 +42,9 @@ class Bot:
             self._auth_args = auth
         return self._auth_args
 
-    def add_domain_to_whitelist(self, domain):
+    def add_domains_to_whitelist(self, domains):
         payload = {
-            "whitelisted_domains": [
-                domain
-            ]
+            "whitelisted_domains": domains
         }
 
         request_endpoint = '{0}/me/messenger_profile'.format(self.graph_url)
