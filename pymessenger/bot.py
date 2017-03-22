@@ -42,6 +42,22 @@ class Bot:
             self._auth_args = auth
         return self._auth_args
 
+    def add_domain_to_whitelist(self, domain):
+        payload = {
+            "whitelisted_domains": [
+                domain
+            ]
+        }
+
+        request_endpoint = '{0}/me/messenger_profile'.format(self.graph_url)
+        response = requests.post(
+            request_endpoint,
+            params=self.auth_args,
+            json=payload
+        )
+        result = response.json()
+        return result
+
     def send_recipient(self, recipient_id, payload, notification_type=NotificationType.regular):
         payload['recipient'] = {
             'id': recipient_id
