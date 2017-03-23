@@ -2,7 +2,7 @@ import attr
 
 
 @attr.s
-class PostbackButton:
+class PostbackButton(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/postback-button
     """
@@ -18,7 +18,7 @@ class PostbackButton:
 
 
 @attr.s
-class CallButton:
+class CallButton(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/postback-button
     """
@@ -38,7 +38,7 @@ class CallButton:
 
 
 @attr.s
-class URLButton:
+class URLButton(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/url-button
     """
@@ -55,7 +55,7 @@ class URLButton:
 
 
 @attr.s
-class ShareButton:
+class ShareButton(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/share-button
     """

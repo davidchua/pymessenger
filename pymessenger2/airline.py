@@ -2,7 +2,7 @@ import attr
 
 
 @attr.s
-class AirlineItinerary:
+class AirlineItinerary(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template
     """
@@ -22,7 +22,7 @@ class AirlineItinerary:
 
 
 @attr.s
-class PassengerInfo:
+class PassengerInfo(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#passenger_info
     """
@@ -32,7 +32,7 @@ class PassengerInfo:
 
 
 @attr.s
-class FlightInfo:
+class FlightInfo(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#flight_info
     """
@@ -47,10 +47,10 @@ class FlightInfo:
 
 
 @attr.s
-class FlightSchedule:
+class FlightSchedule(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#flight_schedule
-    
+
     Times have to be given in yyyy-mm-ddThh:mm
     """
     departure_time = attr.ib(convert=str)
@@ -59,7 +59,7 @@ class FlightSchedule:
 
 
 @attr.s
-class Airport:
+class Airport(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#airport
     """
@@ -70,7 +70,7 @@ class Airport:
 
 
 @attr.s
-class PassengerSegmentInfo:
+class PassengerSegmentInfo(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#passenger_segment_info
     """
@@ -82,7 +82,7 @@ class PassengerSegmentInfo:
 
 
 @attr.s
-class PriceInfo:
+class PriceInfo(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/airline-itinerary-template#price_info
     """
