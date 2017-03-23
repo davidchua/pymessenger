@@ -1,10 +1,6 @@
 from setuptools import setup
 
-installation_requirements = [
-    'requests',
-    'requests-toolbelt',
-    'six'
-]
+installation_requirements = ['requests', 'requests-toolbelt', 'six']
 
 try:
     import enum
@@ -12,16 +8,26 @@ try:
 except ImportError:
     installation_requirements.append('enum')
 
+with open('README.rst') as readme:
+    long_description = readme.read()
+
+with open('requirements.txt') as requirements:
+    required = requirements.read().splitlines()
+
+
 setup(
-    name='pymessenger',
-    packages=['pymessenger'],
-    version='1.0.0',
-    install_requires=installation_requirements,
+    name='pymessenger2',
+    packages=['pymessenger2'],
+    version='3.0.0',
+    install_requires=required,
     description="Python Wrapper for Facebook Messenger Platform",
-    author='David Chua',
-    author_email='zhchua@gmail.com',
-    url='https://github.com/davidchua/pymessenger',
-    download_url='https://github.com/davidchua/pymessenger/tarball/1.0.0',
-    keywords=['facebook messenger', 'python', 'wrapper', 'bot', 'messenger bot'],
-    classifiers=[],
-)
+    long_description=long_description,
+    author='Charles Crete',
+    author_email='cretezy@gmail.com',
+    url='https://github.com/Cretezy/pymessenger2',
+    license='MIT',
+    download_url='https://github.com/Cretezy/pymessenger2/archive/v3.0.0.tar.gz',
+    keywords=[
+        'facebook messenger', 'python', 'wrapper', 'bot', 'messenger bot'
+    ],
+    classifiers=[], )
