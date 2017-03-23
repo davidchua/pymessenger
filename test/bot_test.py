@@ -1,7 +1,7 @@
 import os
 
-from pymessenger.bot import Bot
-from pymessenger import Element, Button
+from pymessenger2 import Element, Button
+from pymessenger2.bot import Bot
 
 TOKEN = os.environ.get('TOKEN')
 APP_SECRET = os.environ.get('APP_SECRET')
@@ -27,8 +27,11 @@ def test_text_message():
 def test_elements():
     image_url = 'https://lh4.googleusercontent.com/-dZ2LhrpNpxs/AAAAAAAAAAI/AAAAAAAA1os/qrf-VeTVJrg/s0-c-k-no-ns/photo.jpg'
     elements = []
-    element = Element(title="Arsenal", image_url=image_url, subtitle="Click to go to Arsenal website.",
-                      item_url="http://arsenal.com")
+    element = Element(
+        title="Arsenal",
+        image_url=image_url,
+        subtitle="Click to go to Arsenal website.",
+        item_url="http://arsenal.com")
     elements.append(element)
     result = bot.send_generic_message(recipient_id, elements)
     assert type(result) is dict
@@ -42,7 +45,8 @@ def test_image_url():
     assert type(result) is dict
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None
-    
+
+
 def test_image_gif_url():
     image_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
     result = bot.send_image_url(recipient_id, image_url)
