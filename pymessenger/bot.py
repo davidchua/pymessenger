@@ -15,7 +15,7 @@ class NotificationType(Enum):
     no_push = "NO_PUSH"
 
 
-class Bot:
+class Bot(object):
     def __init__(self, access_token, **kwargs):
         """
             @required:
