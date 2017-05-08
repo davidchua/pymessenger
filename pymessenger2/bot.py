@@ -136,12 +136,14 @@ class Bot:
     def send_generic_message(self,
                              recipient_id,
                              elements,
+                             image_aspect_ratio='horizontal',
                              notification_type=NotificationType.regular):
         """Send generic messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/generic-template
         Input:
             recipient_id: recipient id to send to
             elements: generic message elements to send
+            image_aspect_ratio: 'horizontal' (default) or 'square'
         Output:
             Response from API as <dict>
         """
@@ -150,6 +152,7 @@ class Bot:
                 "type": "template",
                 "payload": {
                     "template_type": "generic",
+                    "image_aspect_ratio": image_aspect_ratio,
                     "elements": elements
                 }
             }
