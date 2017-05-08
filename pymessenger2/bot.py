@@ -17,7 +17,7 @@ class NotificationType(Enum):
     no_push = "NO_PUSH"
 
 
-class Bot:
+class Bot(object):
     def __init__(self,
                  access_token,
                  api_version=DEFAULT_API_VERSION,
@@ -45,6 +45,20 @@ class Bot:
                 auth['appsecret_proof'] = appsecret_proof
             self._auth_args = auth
         return self._auth_args
+
+    def add_domains_to_whitelist(self, domains):
+        payload = {
+            "whitelisted_domains": domains
+        }
+
+        request_endpoint = '{0}/me/messenger_profile'.format(self.graph_url)
+        response = requests.post(
+            request_endpoint,
+            params=self.auth_args,
+            json=payload
+        )
+        result = response.json()
+        return result
 
     def send_recipient(self,
                        recipient_id,

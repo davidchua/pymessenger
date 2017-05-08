@@ -5,13 +5,13 @@ from .airline import *
 
 
 @attr.s
-class Template:
+class Template(object):
     payload = attr.ib()
     type = attr.ib(default='template')
 
 
 @attr.s
-class Element:
+class Element(object):
     title = attr.ib()
     item_url = attr.ib(default=None)
     image_url = attr.ib(default=None)
@@ -20,7 +20,7 @@ class Element:
 
 
 @attr.s
-class QuickReply:
+class QuickReply(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/quick-replies
 
@@ -40,7 +40,7 @@ class QuickReply:
 
 
 @attr.s
-class ListElement:
+class ListElement(object):
     """
     See https://developers.facebook.com/docs/messenger-platform/send-api-reference/list-template
     """
