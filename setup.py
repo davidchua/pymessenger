@@ -8,7 +8,7 @@ try:
 except ImportError:
     installation_requirements.append('enum')
 
-with open('README.rst') as readme:
+with open('README.md') as readme:
     long_description = readme.read()
 
 with open('requirements.txt') as requirements:
