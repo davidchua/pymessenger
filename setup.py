@@ -8,7 +8,7 @@ try:
 except ImportError:
     installation_requirements.append('enum')
 
-with open('README.md') as readme:
+with open('README.rst') as readme:
     long_description = readme.read()
 
 with open('requirements.txt') as requirements:
@@ -18,7 +18,7 @@ with open('requirements.txt') as requirements:
 setup(
     name='pymessenger2',
     packages=['pymessenger2'],
-    version='3.0.3',
+    version='3.0.5',
     install_requires=required,
     description="Python Wrapper for Facebook Messenger Platform",
     long_description=long_description,
@@ -26,7 +26,7 @@ setup(
     author_email='cretezy@gmail.com',
     url='https://github.com/Cretezy/pymessenger2',
     license='MIT',
-    download_url='https://github.com/Cretezy/pymessenger2/archive/v3.0.3.tar.gz',
+    download_url='https://github.com/Cretezy/pymessenger2/archive/v3.0.5.tar.gz',
     keywords=[
         'facebook messenger', 'python', 'wrapper', 'bot', 'messenger bot'
     ],
