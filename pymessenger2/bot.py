@@ -88,27 +88,35 @@ class Bot(object):
         Output:
             Response from API as <dict>
         """
-        payload = {
-            'recipient': {{
-                'id': recipient_id
-            }},
-            'notification_type': notification_type,
-            'message': {{
-                'attachment': {
-                    'type': attachment_type,
-                    'payload': {}
-                }
-            }},
-            'filedata':
-            (os.path.basename(attachment_path), open(attachment_path, 'rb'))
-        }
-        multipart_data = MultipartEncoder(payload)
-        multipart_header = {'Content-Type': multipart_data.content_type}
-        return requests.post(
-            self.graph_url,
-            data=multipart_data,
-            params=self.auth_args,
-            headers=multipart_header).json()
+        with open(attachment_path, 'rb') as f:
+            attachment_filename = os.path.basename(attachment_path)
+            if attachment_type != 'file':
+                attachment_ext = attachment_filename.split('.')[1]
+                content_type = attachment_type + '/' + attachment_ext # eg: audio/mp3
+            else:
+                content_type = ''
+            payload = {
+                'recipient': json.dumps({
+                    'id': recipient_id
+                }),
+                'notification_type': notification_type.value,
+                'message': json.dumps({
+                    'attachment': {
+                        'type': attachment_type,
+                        'payload': {}
+                    }
+                }),
+                'filedata':
+                (attachment_filename, f, content_type)
+            }
+            multipart_data = MultipartEncoder(payload)
+            multipart_header = {'Content-Type': multipart_data.content_type}
+            request_endpoint = '{0}/me/messages'.format(self.graph_url)
+            return requests.post(
+                request_endpoint,
+                data=multipart_data,
+                params=self.auth_args,
+                headers=multipart_header).json()
 
     def send_attachment_url(self,
                             recipient_id,
@@ -258,7 +266,7 @@ class Bot(object):
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "image", audio_path,
+        return self.send_attachment(recipient_id, "audio", audio_path,
                                     notification_type)
 
     def send_audio_url(self,

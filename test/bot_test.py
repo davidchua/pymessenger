@@ -1,6 +1,8 @@
 import os
+import requests
 
-from pymessenger2 import Element, Button
+from pymessenger2 import Element
+from pymessenger2.buttons import URLButton, PostbackButton
 from pymessenger2.bot import Bot
 
 TOKEN = os.environ.get('TOKEN')
@@ -55,11 +57,27 @@ def test_image_gif_url():
     assert result.get('recipient_id') is not None
 
 
+def test_mp3_url():
+    mp3_url = 'https://archive.org/download/testmp3testfile/mpthreetest.mp3'
+    result = bot.send_audio_url(recipient_id, mp3_url)
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
+
+def test_upload_mp3_file(tmpdir):
+    mp3_url = 'https://archive.org/download/testmp3testfile/mpthreetest.mp3'
+    f = tmpdir.join('mpthreetest.mp3')
+    f.write_binary(requests.get(mp3_url).content)
+    result = bot.send_audio(recipient_id, str(f))
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
+
 def test_button_message():
     buttons = []
-    button = Button(title='Arsenal', type='web_url', url='http://arsenal.com')
+    button = URLButton(title='Arsenal', url='http://arsenal.com')
     buttons.append(button)
-    button = Button(title='Other', type='postback', payload='other')
+    button = PostbackButton(title='Other', payload='other')
     buttons.append(button)
     text = 'Select'
     result = bot.send_button_message(recipient_id, text, buttons)
