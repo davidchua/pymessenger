@@ -49,6 +49,34 @@ class Bot:
         payload['notification_type'] = notification_type.value
         return self.send_raw(payload)
 
+    def send_quick_replies(self, recipient_id, text, quick_replies):
+        return self.send_raw({
+            'recipient': {
+                'id': recipient_id
+            },
+            'message': {
+                'text': text,
+                'quick_replies': quick_replies
+            }
+        })
+
+    def send_generic_message_with_quick_replies(self, recipient_id, elements, quick_replies):
+        return self.send_raw({
+            'recipient': {
+                'id': recipient_id
+            },
+            'message': {
+                'attachment': {
+                    'type': 'template',
+                    'payload': {
+                        'template_type': 'generic',
+                        'elements': elements
+                    }
+                },
+                'quick_replies': quick_replies
+            }
+        })
+
     def send_message(self, recipient_id, message, notification_type=NotificationType.regular):
         return self.send_recipient(recipient_id, {
             'message': message
@@ -130,11 +158,11 @@ class Bot:
             Response from API as <dict>
         """
         return self.send_message(recipient_id, {
-            "attachment": {
-                "type": "template",
-                "payload": {
-                    "template_type": "generic",
-                    "elements": elements
+            'attachment': {
+                'type': 'template',
+                'payload': {
+                    'template_type': 'generic',
+                    'elements': elements
                 }
             }
         }, notification_type)
@@ -150,12 +178,12 @@ class Bot:
             Response from API as <dict>
         """
         return self.send_message(recipient_id, {
-            "attachment": {
-                "type": "template",
-                "payload": {
-                    "template_type": "button",
-                    "text": text,
-                    "buttons": buttons
+            'attachment': {
+                'type': 'template',
+                'payload': {
+                    'template_type': 'button',
+                    'text': text,
+                    'buttons': buttons
                 }
             }
         }, notification_type)
@@ -268,6 +296,49 @@ class Bot:
         """
         return self.send_attachment_url(recipient_id, "file", file_url, notification_type)
 
+    def send_thread_settings(self, payload):
+        return self.post_raw('/me/thread_settings', payload)
+
+    def send_whitelisted_domains(self, whitelisted_domains):
+        return self.send_messenger_profile({'whitelisted_domains': whitelisted_domains})
+
+    def get_whitelisted_domains(self):
+        return self.get_raw('/me/thread_settings', {'fields': 'whitelisted_domains'})
+
+    def send_messenger_profile(self, payload):
+        return self.post_raw('/me/messenger_profile', payload)
+
+    def send_persistent_menu(self, call_to_actions):
+        return self.send_thread_settings({
+            'setting_type': 'call_to_actions',
+            'thread_state': 'existing_thread',
+            'call_to_actions': call_to_actions
+        })
+
+    def send_get_started(self, payload):
+        return self.send_thread_settings({
+            'setting_type': 'call_to_actions',
+            'thread_state': 'new_thread',
+            'call_to_actions': [
+                {
+                    'payload': payload
+                }
+            ]
+        })
+
+    def send_payment_privacy_url(self, payment_privacy_url):
+        return self.send_thread_settings({
+            'setting_type': 'payment',
+            'payment_privacy_url': payment_privacy_url
+        })
+
+    def send_payment_testers(self, payment_testers):
+        return self.send_thread_settings({
+            'setting_type': 'payment',
+            'payment_dev_mode_action': 'ADD',
+            'payment_testers': payment_testers
+        })
+
     def get_user_info(self, recipient_id, fields=None):
         """Getting information about the user
         https://developers.facebook.com/docs/messenger-platform/user-profile
@@ -291,6 +362,26 @@ class Bot:
 
     def send_raw(self, payload):
         request_endpoint = '{0}/me/messages'.format(self.graph_url)
+        response = requests.post(
+            request_endpoint,
+            params=self.auth_args,
+            json=payload
+        )
+        result = response.json()
+        return result
+
+    def get_raw(self, path, params):
+        request_endpoint = '{}{}'.format(self.graph_url, path)
+        params.update(self.auth_args)
+        response = requests.get(
+            request_endpoint,
+            params=params
+        )
+        result = response.json()
+        return result
+
+    def post_raw(self, path, payload):
+        request_endpoint = '{}{}'.format(self.graph_url, path)
         response = requests.post(
             request_endpoint,
             params=self.auth_args,
