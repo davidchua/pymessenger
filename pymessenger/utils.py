@@ -23,7 +23,7 @@ def validate_hub_signature(app_secret, request_payload, hub_signature_header):
                 str(app_secret), unicode(request_payload), digest_module)
         else:
             hmac_object = hmac.new(
-                bytearray(app_secret), str(request_payload).encode('UTF-8'), digest_module)
+                bytearray(app_secret), str(request_payload), digest_module)
         generated_hash = hmac_object.hexdigest()
         if hub_signature == generated_hash:
             return True
