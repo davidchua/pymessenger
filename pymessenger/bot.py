@@ -302,3 +302,51 @@ class Bot:
     def _send_payload(self, payload):
         """ Deprecated, use send_raw instead """
         return self.send_raw(payload)
+
+#quick_replies stuff
+    def QuickReply_Send(self,user_id,text,reply_payload):
+        # quick reply for messenger
+        params = {
+            "access_token":self.access_token,
+        }
+        payload = {
+          "recipient":{"id":user_id,},
+          "message":{
+            "text":"{}".format(text),
+            "quick_replies":reply_payload,
+          }
+        }
+        requests.post(
+            "https://graph.facebook.com/v2.6/me/messages",
+            params=params,
+            data=payload,
+            headers={
+                'Content-type': 'application/json'
+            }
+        )
+
+    # quick replies
+    def QuickReply_CreatePayload(self,qk_payload):
+        # this function constructs and returns a payload for the the quick reply button payload
+        # pass in a tuple-of-list / list-of-lists
+        # example : (['title1','payload'],['title2','payload'])
+        quick_btns = []
+        for i in range(len(qk_payload)):
+            quick_btns.append(
+                {
+                    "content_type":"text",
+                    "title":qk_payload[i][0],
+                    "payload":qk_payload[i][1],
+                }
+            )
+        return quick_btns
+
+    def QuickReply_SendButtons(self,recipient_id,quick_reply_message,reply_options):
+        # sends the quick reply button
+        # automatically constructs the payload for the buttons from the list
+        reply_payload = QuickReply_CreatePayload(reply_options)
+        QuickReply_Send(token = token,
+            user_id = recipient_id,
+            text = "{}".format(quick_reply_message),
+            reply_payload = reply_payload,
+        )
