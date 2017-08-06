@@ -306,6 +306,7 @@ class Bot:
 #quick_replies stuff
     def QuickReply_Send(self,user_id,text,reply_payload):
         # quick reply for messenger
+        # this method sends the request to fb
         params = {
             "access_token":self.access_token,
         }
@@ -331,6 +332,7 @@ class Bot:
         # pass in a tuple-of-list / list-of-lists
         # example : (['title1','payload'],['title2','payload'])
         quick_btns = []
+        # constructs the payload 
         for i in range(len(qk_payload)):
             quick_btns.append(
                 {
@@ -341,8 +343,9 @@ class Bot:
             )
         return quick_btns
 
-    def QuickReply_SendButtons(self,recipient_id,quick_reply_message,reply_options):
-        # sends the quick reply button
+    def send_quickreply(self,recipient_id,quick_reply_message,reply_options):
+        # use this method to send quick replies
+        # this method puts everything together
         # automatically constructs the payload for the buttons from the list
         reply_payload = QuickReply_CreatePayload(reply_options)
         QuickReply_Send(token = token,
