@@ -25,6 +25,7 @@ This wrapper has the following functions:
 * send_action(recipient_id, action)
 * send_raw(payload)
 * get_user_info(recipient_id)
+* send_quickreply(recipient_id,quick_reply_message,reply_options)
 
 You can see the code/documentation for there in [bot.py](pymessenger/bot.py).
 
@@ -86,6 +87,25 @@ bot = Bot(<access_token>)
 image_url = "http://url/to/image.png"
 bot.send_image_url(recipient_id, image_url)
 ```
+##### Sending quick reply buttons
+
+```python
+
+from pymessenger.bot import Bot
+bot = Bot(<access_token>)
+
+# text which is shown
+quick_reply_message = "What's your favorite House in Game of Thrones?"
+# these are the buttons. You don't have to pass in a payload. All you have to do
+# is pass in a tuple containing `button_text` and `payload` in a list
+# any number of buttons can be added 
+# format : (["button_text1","payload1"],["button_text2"],"payload2")
+quick_rep_option = (["Stark","stark_payload"],["Lannister","lan_payload"],["Targaryan","tar_payload"],["none","None"])
+bot.send_quickreply(recipient_id,quick_reply_message,quick_rep_option)
+
+
+```
+
 
 ### Todo
 
@@ -100,5 +120,3 @@ bot.send_image_url(recipient_id, image_url)
 ![Screenshot of Echo Facebook Bot](https://cloud.githubusercontent.com/assets/68039/14516627/905c84ae-0237-11e6-918e-2c2ae9352f7d.png)
 
 You can find an example of an Echo Facebook Bot in ```examples/```
-
-
