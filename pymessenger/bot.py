@@ -353,3 +353,49 @@ class Bot:
             text = "{}".format(quick_reply_message),
             reply_payload = reply_payload,
         )
+        
+        # show the `get started` button
+    def GetStartedButton_createBtn(self):
+        params = {
+            "access_token":self.access_token,
+        }
+        payload = json.dumps({
+                "get_started":{
+                            "payload":"@get_started"
+                }
+        })
+
+        requests.post(
+                        "https://graph.facebook.com/v2.6/me/messenger_profile",
+                        params=params,
+                        data=payload,
+                        headers={
+                            'Content-type': 'application/json'
+                        }
+        )
+
+
+
+    # get the payload from the get started button
+    def GetStartedButton_getPayload(self):
+        params = {
+            "access_token":self.access_token,
+        }
+        requests.get("https://graph.facebook.com/v2.6/me/messenger_profile?fields=get_started",params=params)
+
+    # delete the `get started` button
+    def GetStartedButton_deleteBtn(self):
+        params = {
+            "access_token":self.access_token,
+        }
+        payload = {
+                "fields":[
+                        "get_started"
+                ]
+        }
+        requests.delete(
+                        "https://graph.facebook.com/v2.6/me/messenger_profile",
+                        params=params,data=payload,
+                        headers={'Content-type':'application/json'}
+        )
+
