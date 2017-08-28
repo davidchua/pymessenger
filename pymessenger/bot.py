@@ -164,7 +164,7 @@ class Bot:
             }
         }, notification_type)
 
-    def send_quick_replies(self, recipient_id, buttons, notification_type=NotificationType.regular):
+    def send_quick_replies(self, recipient_id, text, buttons, notification_type=NotificationType.regular):
         """Send quick reply buttons to the recepiend.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/quick-replies
         Input:
@@ -180,6 +180,7 @@ class Bot:
             Response from API as <dict>
         """
         return self.send_message(recipient_id, {
+            "text": text,
             "quick_replies": buttons
         }, notification_type)
 
