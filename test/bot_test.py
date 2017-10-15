@@ -92,7 +92,7 @@ def test_quick_reply():
     button = QuickReplyButton(title='Button 2', payload='btn2')
     buttons.append(button)
     message = 'Select'
-    result = bot.send_button_message(recipient_id, message, buttons)
+    result = bot.send_quick_reply(recipient_id, message, buttons)
     assert type(result) is dict
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None
