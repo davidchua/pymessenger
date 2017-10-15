@@ -2,7 +2,7 @@ import os
 import requests
 
 from pymessenger2 import Element
-from pymessenger2.buttons import URLButton, PostbackButton
+from pymessenger2.buttons import URLButton, PostbackButton, QuickReplyButton
 from pymessenger2.bot import Bot
 
 TOKEN = os.environ.get('TOKEN')
@@ -81,6 +81,18 @@ def test_button_message():
     buttons.append(button)
     text = 'Select'
     result = bot.send_button_message(recipient_id, text, buttons)
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
+
+def test_quick_reply():
+    buttons = []
+    button = QuickReplyButton(title='Button 1', payload='btn1')
+    buttons.append(button)
+    button = QuickReplyButton(title='Button 2', payload='btn2')
+    buttons.append(button)
+    message = 'Select'
+    result = bot.send_button_message(recipient_id, message, buttons)
     assert type(result) is dict
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None
