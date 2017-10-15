@@ -21,7 +21,7 @@ def validate_hub_signature(app_secret, request_payload, hub_signature_header):
     else:
         digest_module = getattr(hashlib, hash_method)
         hmac_object = hmac.new(
-            str(app_secret), unicode(request_payload), digest_module)
+            str(app_secret), str(request_payload), digest_module)
         generated_hash = hmac_object.hexdigest()
         if hub_signature == generated_hash:
             return True
@@ -39,7 +39,7 @@ def generate_appsecret_proof(access_token, app_secret):
     """
     if six.PY2:
         hmac_object = hmac.new(
-            str(app_secret), unicode(access_token), hashlib.sha256)
+            str(app_secret), str(access_token), hashlib.sha256)
     else:
         hmac_object = hmac.new(
             bytearray(app_secret, 'utf8'),
