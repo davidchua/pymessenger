@@ -65,7 +65,7 @@ class Bot(object):
                        payload,
                        notification_type=NotificationType.regular):
         payload['recipient'] = {'id': recipient_id}
-        payload['notification_type'] = notification_type.value
+        payload['notification_type'] = notification_type
         return self.send_raw(payload)
 
     def send_message(self,
@@ -179,7 +179,26 @@ class Bot(object):
                 }
             }
         }, notification_type)
-
+    
+    def send_quick_reply(self,
+                         recipient_id,
+                         message,
+                         buttons,
+                         notification_type=NotificationType.regular):
+        """Quick Replies provide a way to present buttons in a message.
+        https://developers.facebook.com/docs/messenger-platform/send-messages/quick-replies
+        Input:
+            recipient_id: recipient id to send to
+            message: message to send
+            buttons: buttons to send
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_message(recipient_id, {
+                'text': message,
+                'quick_replies': buttons
+                }, notification_type)
+    
     def send_button_message(self,
                             recipient_id,
                             text,
