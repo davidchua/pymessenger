@@ -16,7 +16,24 @@ class PostbackButton(object):
         if not self.payload:
             self.payload = self.title
 
+@attr.s
+class QuickReplyButton(object):
+    """
+    See https://developers.facebook.com/docs/messenger-platform/send-messages/quick-replies
+    """
+    title = attr.ib()
+    payload = attr.ib(default=None)
+    content_type = attr.ib(default='text')
+    image_url = attr.ib(default=None)
 
+    def __attrs_post_init__(self):
+        assert self.content_type == 'text', 'Type of a button can\'t be set ' \
+                                        'manually.'
+        if not self.payload:
+            self.payload = self.title
+
+
+            
 @attr.s
 class CallButton(object):
     """
