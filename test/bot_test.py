@@ -1,8 +1,8 @@
 import os
 import requests
 
-from pymessenger2 import Element
-from pymessenger2.buttons import URLButton, PostbackButton, QuickReplyButton
+from pymessenger2 import Element, QuickReply
+from pymessenger2.buttons import URLButton, PostbackButton
 from pymessenger2.bot import Bot
 
 TOKEN = os.environ.get('TOKEN')
@@ -87,9 +87,9 @@ def test_button_message():
 
 def test_quick_reply():
     buttons = []
-    button = QuickReplyButton(title='Button 1', payload='btn1')
+    button = QuickReply(content_type='text', title='Button 1', payload='btn1')
     buttons.append(button)
-    button = QuickReplyButton(title='Button 2', payload='btn2')
+    button = QuickReply(content_type='text', title='Button 2', payload='btn2')
     buttons.append(button)
     message = 'Select'
     result = bot.send_quick_reply(recipient_id, message, buttons)
