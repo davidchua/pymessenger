@@ -16,6 +16,7 @@ This wrapper has the following functions:
 -  ``send_message(recipient_id, message)``
 -  ``send_generic_message(recipient_id, elements)``
 -  ``send_button_message(recipient_id, text, buttons)``
+-  ``send_quick_reply(recipient_id, text, buttons)``
 -  ``send_attachment(recipient_id, attachment_type, attachment_path)``
 -  ``send_attachment_url(recipient_id, attachment_type, attachment_url)``
 -  ``send_image(recipient_id, image_path)``
