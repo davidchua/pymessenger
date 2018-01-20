@@ -143,6 +143,20 @@ class Bot:
             }
         }, notification_type)
 
+    def send_receipt(self, recipient_id, payload, notification_type=NotificationType.regular):
+        """
+        Receipt template
+        See https://developers.facebook.com/docs/messenger-platform/send-messages/template/receipt
+        for payload details
+        """
+        return self.send_message(recipient_id, {
+            "attachment": {
+                "type": "template",
+                "payload": payload
+            }
+        }, notification_type)
+
+
     def send_button_message(self, recipient_id, text, buttons, notification_type=NotificationType.regular):
         """Send text messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/button-template
