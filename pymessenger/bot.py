@@ -124,6 +124,14 @@ class Bot:
             'text': message
         }, notification_type)
 
+    def sender_action(self, recipient_id, action, notification_type=NotificationType.regular):
+        """Add sender action.
+        https://developers.facebook.com/docs/messenger-platform/send-messages/sender-actions
+        """
+        return self.send_recipient(recipient_id, {
+            'sender_action': action
+        }, notification_type)
+
     def send_generic_message(self, recipient_id, elements, notification_type=NotificationType.regular):
         """Send generic messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/generic-template
@@ -149,7 +157,7 @@ class Bot:
         See https://developers.facebook.com/docs/messenger-platform/send-messages/template/receipt
         for payload details
         """
-        return self.send_message(recipient_id, {
+        return self.send_recipient(recipient_id, {
             "attachment": {
                 "type": "template",
                 "payload": payload
