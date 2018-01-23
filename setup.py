@@ -21,7 +21,7 @@ setup(
     author='David Chua',
     author_email='zhchua@gmail.com',
     url='https://github.com/davidchua/pymessenger',
-    download_url='https://github.com/davidchua/pymessenger/tarball/1.0.0',
+    download_url='https://github.com/felixcheruiyot/pymessenger/tarball/master',
     keywords=['facebook messenger', 'python', 'wrapper', 'bot', 'messenger bot'],
     classifiers=[],
 )
