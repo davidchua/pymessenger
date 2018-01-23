@@ -15,7 +15,7 @@ except ImportError:
 setup(
     name='pymessenger',
     packages=['pymessenger'],
-    version='1.0.1',
+    version='1.0.2',
     install_requires=installation_requirements,
     description="Python Wrapper for Facebook Messenger Platform",
     author='David Chua, Felix Clone',
