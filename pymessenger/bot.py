@@ -150,9 +150,11 @@ class Bot:
         for payload details
         """
         return self.send_recipient(recipient_id, {
-            "attachment": {
-                "type": "template",
-                "payload": payload
+            "message": {
+                "attachment": {
+                    "type": "template",
+                    "payload": payload
+                }
             }
         }, notification_type)
 
