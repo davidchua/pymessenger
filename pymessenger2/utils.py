@@ -1,6 +1,8 @@
 import hashlib
 import hmac
 import six
+import attr
+import json
 
 
 def validate_hub_signature(app_secret, request_payload, hub_signature_header):
@@ -18,7 +20,8 @@ def validate_hub_signature(app_secret, request_payload, hub_signature_header):
         pass
     else:
         digest_module = getattr(hashlib, hash_method)
-        hmac_object = hmac.new(str(app_secret), unicode(request_payload), digest_module)
+        hmac_object = hmac.new(
+            str(app_secret), str(request_payload), digest_module)
         generated_hash = hmac_object.hexdigest()
         if hub_signature == generated_hash:
             return True
@@ -35,8 +38,21 @@ def generate_appsecret_proof(access_token, app_secret):
                 using app_secret as the key
     """
     if six.PY2:
-        hmac_object = hmac.new(str(app_secret), unicode(access_token), hashlib.sha256)
+        hmac_object = hmac.new(
+            str(app_secret), str(access_token), hashlib.sha256)
     else:
-        hmac_object = hmac.new(bytearray(app_secret, 'utf8'), str(access_token).encode('utf8'), hashlib.sha256)
+        hmac_object = hmac.new(
+            bytearray(app_secret, 'utf8'),
+            str(access_token).encode('utf8'), hashlib.sha256)
     generated_hash = hmac_object.hexdigest()
     return generated_hash
+
+
+class AttrsEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, '__attrs_attrs__'):
+            items_iterator = (attr.asdict(obj).items()
+                              if six.PY3 else
+                              attr.asdict(obj).iteritems())
+            return {k: v for k, v in items_iterator if v is not None}
+        return json.JSONEncoder.default(self, obj)

@@ -1,7 +1,9 @@
 import os
+import requests
 
-from pymessenger.bot import Bot
-from pymessenger import Element, Button
+from pymessenger2 import Element, QuickReply
+from pymessenger2.buttons import URLButton, PostbackButton
+from pymessenger2.bot import Bot
 
 TOKEN = os.environ.get('TOKEN')
 APP_SECRET = os.environ.get('APP_SECRET')
@@ -27,8 +29,11 @@ def test_text_message():
 def test_elements():
     image_url = 'https://lh4.googleusercontent.com/-dZ2LhrpNpxs/AAAAAAAAAAI/AAAAAAAA1os/qrf-VeTVJrg/s0-c-k-no-ns/photo.jpg'
     elements = []
-    element = Element(title="Arsenal", image_url=image_url, subtitle="Click to go to Arsenal website.",
-                      item_url="http://arsenal.com")
+    element = Element(
+        title="Arsenal",
+        image_url=image_url,
+        subtitle="Click to go to Arsenal website.",
+        item_url="http://arsenal.com")
     elements.append(element)
     result = bot.send_generic_message(recipient_id, elements)
     assert type(result) is dict
@@ -42,7 +47,8 @@ def test_image_url():
     assert type(result) is dict
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None
-    
+
+
 def test_image_gif_url():
     image_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
     result = bot.send_image_url(recipient_id, image_url)
@@ -51,14 +57,42 @@ def test_image_gif_url():
     assert result.get('recipient_id') is not None
 
 
+def test_mp3_url():
+    mp3_url = 'https://archive.org/download/testmp3testfile/mpthreetest.mp3'
+    result = bot.send_audio_url(recipient_id, mp3_url)
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
+
+def test_upload_mp3_file(tmpdir):
+    mp3_url = 'https://archive.org/download/testmp3testfile/mpthreetest.mp3'
+    f = tmpdir.join('mpthreetest.mp3')
+    f.write_binary(requests.get(mp3_url).content)
+    result = bot.send_audio(recipient_id, str(f))
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
+
 def test_button_message():
     buttons = []
-    button = Button(title='Arsenal', type='web_url', url='http://arsenal.com')
+    button = URLButton(title='Arsenal', url='http://arsenal.com')
     buttons.append(button)
-    button = Button(title='Other', type='postback', payload='other')
+    button = PostbackButton(title='Other', payload='other')
     buttons.append(button)
     text = 'Select'
     result = bot.send_button_message(recipient_id, text, buttons)
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
+
+def test_quick_reply():
+    buttons = []
+    button = QuickReply(content_type='text', title='Button 1', payload='btn1')
+    buttons.append(button)
+    button = QuickReply(content_type='text', title='Button 2', payload='btn2')
+    buttons.append(button)
+    message = 'Select'
+    result = bot.send_quick_reply(recipient_id, message, buttons)
     assert type(result) is dict
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None

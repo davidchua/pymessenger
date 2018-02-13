@@ -1,10 +1,12 @@
 import os
 from enum import Enum
 
+import json
 import requests
 from requests_toolbelt import MultipartEncoder
 
-from pymessenger import utils
+from pymessenger2 import utils
+from pymessenger2.utils import AttrsEncoder
 
 DEFAULT_API_VERSION = 2.6
 
@@ -15,8 +17,11 @@ class NotificationType(Enum):
     no_push = "NO_PUSH"
 
 
-class Bot:
-    def __init__(self, access_token, **kwargs):
+class Bot(object):
+    def __init__(self,
+                 access_token,
+                 api_version=DEFAULT_API_VERSION,
+                 app_secret=None):
         """
             @required:
                 access_token
@@ -24,37 +29,56 @@ class Bot:
                 api_version
                 app_secret
         """
-
-        self.api_version = kwargs.get('api_version') or DEFAULT_API_VERSION
-        self.app_secret = kwargs.get('app_secret')
-        self.graph_url = 'https://graph.facebook.com/v{0}'.format(self.api_version)
+        self.api_version = api_version
+        self.app_secret = app_secret
+        self.graph_url = 'https://graph.facebook.com/v{0}'.format(
+            self.api_version)
         self.access_token = access_token
 
     @property
     def auth_args(self):
         if not hasattr(self, '_auth_args'):
-            auth = {
-                'access_token': self.access_token
-            }
+            auth = {'access_token': self.access_token}
             if self.app_secret is not None:
-                appsecret_proof = utils.generate_appsecret_proof(self.access_token, self.app_secret)
+                appsecret_proof = utils.generate_appsecret_proof(
+                    self.access_token, self.app_secret)
                 auth['appsecret_proof'] = appsecret_proof
             self._auth_args = auth
         return self._auth_args
 
-    def send_recipient(self, recipient_id, payload, notification_type=NotificationType.regular):
-        payload['recipient'] = {
-            'id': recipient_id
+    def add_domains_to_whitelist(self, domains):
+        payload = {
+            "whitelisted_domains": domains
         }
-        payload['notification_type'] = notification_type.value
+
+        request_endpoint = '{0}/me/messenger_profile'.format(self.graph_url)
+        response = requests.post(
+            request_endpoint,
+            params=self.auth_args,
+            json=payload
+        )
+        result = response.json()
+        return result
+
+    def send_recipient(self,
+                       recipient_id,
+                       payload,
+                       notification_type=NotificationType.regular):
+        payload['recipient'] = {'id': recipient_id}
+        payload['notification_type'] = notification_type
         return self.send_raw(payload)
 
-    def send_message(self, recipient_id, message, notification_type=NotificationType.regular):
-        return self.send_recipient(recipient_id, {
-            'message': message
-        }, notification_type)
+    def send_message(self,
+                     recipient_id,
+                     message,
+                     notification_type=NotificationType.regular):
+        return self.send_recipient(recipient_id, {'message': message},
+                                   notification_type)
 
-    def send_attachment(self, recipient_id, attachment_type, attachment_path,
+    def send_attachment(self,
+                        recipient_id,
+                        attachment_type,
+                        attachment_path,
                         notification_type=NotificationType.regular):
         """Send an attachment to the specified recipient using local path.
         Input:
@@ -64,31 +88,40 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        payload = {
-            'recipient': {
-                {
+        with open(attachment_path, 'rb') as f:
+            attachment_filename = os.path.basename(attachment_path)
+            if attachment_type != 'file':
+                attachment_ext = attachment_filename.split('.')[1]
+                content_type = attachment_type + '/' + attachment_ext # eg: audio/mp3
+            else:
+                content_type = ''
+            payload = {
+                'recipient': json.dumps({
                     'id': recipient_id
-                }
-            },
-            'notification_type': notification_type,
-            'message': {
-                {
+                }),
+                'notification_type': notification_type.value,
+                'message': json.dumps({
                     'attachment': {
                         'type': attachment_type,
                         'payload': {}
                     }
-                }
-            },
-            'filedata': (os.path.basename(attachment_path), open(attachment_path, 'rb'))
-        }
-        multipart_data = MultipartEncoder(payload)
-        multipart_header = {
-            'Content-Type': multipart_data.content_type
-        }
-        return requests.post(self.graph_url, data=multipart_data,
-                             params=self.auth_args, headers=multipart_header).json()
+                }),
+                'filedata':
+                (attachment_filename, f, content_type)
+            }
+            multipart_data = MultipartEncoder(payload)
+            multipart_header = {'Content-Type': multipart_data.content_type}
+            request_endpoint = '{0}/me/messages'.format(self.graph_url)
+            return requests.post(
+                request_endpoint,
+                data=multipart_data,
+                params=self.auth_args,
+                headers=multipart_header).json()
 
-    def send_attachment_url(self, recipient_id, attachment_type, attachment_url,
+    def send_attachment_url(self,
+                            recipient_id,
+                            attachment_type,
+                            attachment_url,
                             notification_type=NotificationType.regular):
         """Send an attachment to the specified recipient using URL.
         Input:
@@ -107,7 +140,10 @@ class Bot:
             }
         }, notification_type)
 
-    def send_text_message(self, recipient_id, message, notification_type=NotificationType.regular):
+    def send_text_message(self,
+                          recipient_id,
+                          message,
+                          notification_type=NotificationType.regular):
         """Send text messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/text-message
         Input:
@@ -116,16 +152,20 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_message(recipient_id, {
-            'text': message
-        }, notification_type)
+        return self.send_message(recipient_id, {'text': message},
+                                 notification_type)
 
-    def send_generic_message(self, recipient_id, elements, notification_type=NotificationType.regular):
+    def send_generic_message(self,
+                             recipient_id,
+                             elements,
+                             image_aspect_ratio='horizontal',
+                             notification_type=NotificationType.regular):
         """Send generic messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/generic-template
         Input:
             recipient_id: recipient id to send to
             elements: generic message elements to send
+            image_aspect_ratio: 'horizontal' (default) or 'square'
         Output:
             Response from API as <dict>
         """
@@ -134,12 +174,36 @@ class Bot:
                 "type": "template",
                 "payload": {
                     "template_type": "generic",
+                    "image_aspect_ratio": image_aspect_ratio,
                     "elements": elements
                 }
             }
         }, notification_type)
-
-    def send_button_message(self, recipient_id, text, buttons, notification_type=NotificationType.regular):
+    
+    def send_quick_reply(self,
+                         recipient_id,
+                         message,
+                         buttons,
+                         notification_type=NotificationType.regular):
+        """Quick Replies provide a way to present buttons in a message.
+        https://developers.facebook.com/docs/messenger-platform/send-messages/quick-replies
+        Input:
+            recipient_id: recipient id to send to
+            message: message to send
+            buttons: buttons to send
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_message(recipient_id, {
+                'text': message,
+                'quick_replies': buttons
+                }, notification_type)
+    
+    def send_button_message(self,
+                            recipient_id,
+                            text,
+                            buttons,
+                            notification_type=NotificationType.regular):
         """Send text messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/button-template
         Input:
@@ -160,7 +224,10 @@ class Bot:
             }
         }, notification_type)
 
-    def send_action(self, recipient_id, action, notification_type=NotificationType.regular):
+    def send_action(self,
+                    recipient_id,
+                    action,
+                    notification_type=NotificationType.regular):
         """Send typing indicators or send read receipts to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/sender-actions
 
@@ -170,11 +237,13 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_recipient(recipient_id, {
-            'sender_action': action
-        }, notification_type)
+        return self.send_recipient(recipient_id, {'sender_action': action},
+                                   notification_type)
 
-    def send_image(self, recipient_id, image_path, notification_type=NotificationType.regular):
+    def send_image(self,
+                   recipient_id,
+                   image_path,
+                   notification_type=NotificationType.regular):
         """Send an image to the specified recipient.
         Image must be PNG or JPEG or GIF (more might be supported).
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/image-attachment
@@ -184,9 +253,13 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "image", image_path, notification_type)
+        return self.send_attachment(recipient_id, "image", image_path,
+                                    notification_type)
 
-    def send_image_url(self, recipient_id, image_url, notification_type=NotificationType.regular):
+    def send_image_url(self,
+                       recipient_id,
+                       image_url,
+                       notification_type=NotificationType.regular):
         """Send an image to specified recipient using URL.
         Image must be PNG or JPEG or GIF (more might be supported).
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/image-attachment
@@ -196,9 +269,13 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "image", image_url, notification_type)
+        return self.send_attachment_url(recipient_id, "image", image_url,
+                                        notification_type)
 
-    def send_audio(self, recipient_id, audio_path, notification_type=NotificationType.regular):
+    def send_audio(self,
+                   recipient_id,
+                   audio_path,
+                   notification_type=NotificationType.regular):
         """Send audio to the specified recipient.
         Audio must be MP3 or WAV
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/audio-attachment
@@ -208,9 +285,13 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "image", audio_path, notification_type)
+        return self.send_attachment(recipient_id, "audio", audio_path,
+                                    notification_type)
 
-    def send_audio_url(self, recipient_id, audio_url, notification_type=NotificationType.regular):
+    def send_audio_url(self,
+                       recipient_id,
+                       audio_url,
+                       notification_type=NotificationType.regular):
         """Send audio to specified recipient using URL.
         Audio must be MP3 or WAV
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/audio-attachment
@@ -220,9 +301,13 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "audio", audio_url, notification_type)
+        return self.send_attachment_url(recipient_id, "audio", audio_url,
+                                        notification_type)
 
-    def send_video(self, recipient_id, video_path, notification_type=NotificationType.regular):
+    def send_video(self,
+                   recipient_id,
+                   video_path,
+                   notification_type=NotificationType.regular):
         """Send video to the specified recipient.
         Video should be MP4 or MOV, but supports more (https://www.facebook.com/help/218673814818907).
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/video-attachment
@@ -232,9 +317,13 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "video", video_path, notification_type)
+        return self.send_attachment(recipient_id, "video", video_path,
+                                    notification_type)
 
-    def send_video_url(self, recipient_id, video_url, notification_type=NotificationType.regular):
+    def send_video_url(self,
+                       recipient_id,
+                       video_url,
+                       notification_type=NotificationType.regular):
         """Send video to specified recipient using URL.
         Video should be MP4 or MOV, but supports more (https://www.facebook.com/help/218673814818907).
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/video-attachment
@@ -244,9 +333,13 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "video", video_url, notification_type)
+        return self.send_attachment_url(recipient_id, "video", video_url,
+                                        notification_type)
 
-    def send_file(self, recipient_id, file_path, notification_type=NotificationType.regular):
+    def send_file(self,
+                  recipient_id,
+                  file_path,
+                  notification_type=NotificationType.regular):
         """Send file to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/file-attachment
         Input:
@@ -255,9 +348,13 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "file", file_path, notification_type)
+        return self.send_attachment(recipient_id, "file", file_path,
+                                    notification_type)
 
-    def send_file_url(self, recipient_id, file_url, notification_type=NotificationType.regular):
+    def send_file_url(self,
+                      recipient_id,
+                      file_url,
+                      notification_type=NotificationType.regular):
         """Send file to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/file-attachment
         Input:
@@ -266,7 +363,8 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "file", file_url, notification_type)
+        return self.send_attachment_url(recipient_id, "file", file_url,
+                                        notification_type)
 
     def get_user_info(self, recipient_id, fields=None):
         """Getting information about the user
@@ -294,8 +392,8 @@ class Bot:
         response = requests.post(
             request_endpoint,
             params=self.auth_args,
-            json=payload
-        )
+            data=json.dumps(payload, cls=AttrsEncoder),
+            headers={'Content-Type': 'application/json'})
         result = response.json()
         return result
 
