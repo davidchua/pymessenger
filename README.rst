@@ -119,7 +119,6 @@ Todo
 
 -  Structured Messages
 -  Receipt Messages
--  Quick Replies
 -  Airlines
 -  Tests!
 
