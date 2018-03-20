@@ -208,7 +208,7 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "image", audio_path, notification_type)
+        return self.send_attachment(recipient_id, "audio", audio_path, notification_type)
 
     def send_audio_url(self, recipient_id, audio_url, notification_type=NotificationType.regular):
         """Send audio to specified recipient using URL.
