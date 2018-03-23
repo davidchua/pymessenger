@@ -43,7 +43,7 @@ class Bot:
         return self._auth_args
 
     def send_recipient(self, recipient_id, payload, notification_type=NotificationType.regular):
-        if 't_' in recipient_id:
+        if 't_' in recipient_id and recipient_id not None:
             key = 'thread_key'
         else:
             key = 'id'
