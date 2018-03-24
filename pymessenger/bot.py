@@ -1,4 +1,5 @@
 import os
+import json
 from enum import Enum
 
 import requests
@@ -302,3 +303,169 @@ class Bot:
     def _send_payload(self, payload):
         """ Deprecated, use send_raw instead """
         return self.send_raw(payload)
+
+#quick_replies stuff
+    def QuickReply_Send(self,user_id,text,reply_payload):
+        # quick reply for messenger
+        # this method sends the request to fb
+        params = {
+            "access_token":self.access_token,
+        }
+        payload = {
+          "recipient":{"id":user_id,},
+          "message":{
+            "text":"{}".format(text),
+            "quick_replies":reply_payload,
+          }
+        }
+        requests.post(
+            "https://graph.facebook.com/v2.6/me/messages",
+            params=params,
+            data=payload,
+            headers={
+                'Content-type': 'application/json'
+            }
+        )
+
+    # quick replies
+    def QuickReply_CreatePayload(self,qk_payload):
+        # this function constructs and returns a payload for the the quick reply button payload
+        # pass in a tuple-of-list / list-of-lists
+        # example : (['title1','payload'],['title2','payload'])
+        quick_btns = []
+        # constructs the payload 
+        for i in range(len(qk_payload)):
+            quick_btns.append(
+                {
+                    "content_type":"text",
+                    "title":qk_payload[i][0],
+                    "payload":qk_payload[i][1],
+                }
+            )
+        return quick_btns
+
+    def send_quickreply(self,recipient_id,quick_reply_message,reply_options):
+        # use this method to send quick replies
+        # this method puts everything together
+        # automatically constructs the payload for the buttons from the list
+        reply_payload = QuickReply_CreatePayload(reply_options)
+        QuickReply_Send(token = token,
+            user_id = recipient_id,
+            text = "{}".format(quick_reply_message),
+            reply_payload = reply_payload,
+        )
+        
+        # show the `get started` button
+    def GetStartedButton_createBtn(self):
+        params = {
+            "access_token":self.access_token,
+        }
+        payload = json.dumps({
+                "get_started":{
+                            "payload":"@get_started"
+                }
+        })
+
+        requests.post(
+                        "https://graph.facebook.com/v2.6/me/messenger_profile",
+                        params=params,
+                        data=payload,
+                        headers={
+                            'Content-type': 'application/json'
+                        }
+        )
+
+
+
+    # get the payload from the get started button
+    def GetStartedButton_getPayload(self):
+        params = {
+            "access_token":self.access_token,
+        }
+        requests.get("https://graph.facebook.com/v2.6/me/messenger_profile?fields=get_started",params=params)
+
+    # delete the `get started` button
+    def GetStartedButton_deleteBtn(self):
+        params = {
+            "access_token":self.access_token,
+        }
+        payload = {
+                "fields":[
+                        "get_started"
+                ]
+        }
+        requests.delete(
+                        "https://graph.facebook.com/v2.6/me/messenger_profile",
+                        params=params,data=payload,
+                        headers={'Content-type':'application/json'}
+        )
+        
+        
+def build_generic_elements(self,elements):
+    """ arg format :({
+                        "element_data":[{"data":[title,img_url,sub_title,action_url]},]
+                        "button_data":[{"data":[url,title]}]
+                    })
+
+    """
+    element_list = []
+    button_list = []
+    len_element = len(elements['element_data'])
+    len_button = len(elements['button_data'])
+    
+    # constructs the button payload
+    for i in range(len_button):
+        button_list.append({
+            "type":"web_url",
+            "url":elements['button_data'][i]['data'][0],
+            "title":elements['button_data'][i]['data'][1],
+        })
+
+    # constructs the generic elements payload
+    for x in range(len_element):
+        element_list.append({
+            "title":elements['element_data'][x]['data'][0],
+            "image_url":elements['element_data'][x]['data'][1],
+            "subtitle":elements['element_data'][x]['data'][2],
+            "default_action":{
+                "type": "web_url",
+                "url": elements['element_data'][x]['data'][3],
+                "webview_height_ratio": "tall",
+            },
+            "buttons": button_list,
+        })
+    return element_list
+
+def generic_button_send(self,user_id,element_payload):
+    params = {
+        "access_token":self.access_token,
+
+    }
+
+    # builds the payload for elements in JSON format
+    elements = build_generic_elements(element_payload)
+    data=json.dumps({
+      "recipient":{
+        "id":user_id
+      },
+      "message":{
+        "attachment":{
+          "type":"template",
+          "payload":{
+            "template_type":"generic",
+            "elements": elements,
+          }
+        }
+      }
+    })
+
+    requests.post(
+        "https://graph.facebook.com/v2.6/me/messages",
+        params=params,
+        data=data,
+        headers={
+            'Content-type': 'application/json'
+        }
+    )
+
+
