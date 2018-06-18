@@ -63,30 +63,29 @@ class Bot:
             attachment_path: Path of attachment
         Output:
             Response from API as <dict>
-        """
+        """ 
         payload = {
-            'recipient': {
-                {
+            'recipient': str({
                     'id': recipient_id
-                }
-            },
-            'notification_type': notification_type,
-            'message': {
-                {
+            }),
+            'notification_type': notification_type.value,
+            'message': str({
                     'attachment': {
                         'type': attachment_type,
                         'payload': {}
                     }
-                }
-            },
+            }),
             'filedata': (os.path.basename(attachment_path), open(attachment_path, 'rb'))
         }
         multipart_data = MultipartEncoder(payload)
         multipart_header = {
             'Content-Type': multipart_data.content_type
         }
-        return requests.post(self.graph_url, data=multipart_data,
-                             params=self.auth_args, headers=multipart_header).json()
+        return requests.post('{}/me/messages?access_token='.format(self.graph_url, 
+                                                                   self.access_token), 
+                             data=multipart_data,
+                             params=self.auth_args, 
+                             headers=multipart_header).json()
 
     def send_attachment_url(self, recipient_id, attachment_type, attachment_url,
                             notification_type=NotificationType.regular):
