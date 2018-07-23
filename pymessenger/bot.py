@@ -1,5 +1,5 @@
 import os
-from enum import Enum
+from enum import EnumMeta
 
 import logging
 import requests
@@ -10,7 +10,7 @@ from pymessenger import utils
 DEFAULT_API_VERSION = 2.6
 
 
-class NotificationType(Enum):
+class NotificationType(EnumMeta):
     regular = "REGULAR"
     silent_push = "SILENT_PUSH"
     no_push = "NO_PUSH"
@@ -47,13 +47,13 @@ class Bot:
         payload['recipient'] = {
             'id': recipient_id
         }
-        payload['notification_type'] = notification_type.value
+        payload['notification_type'] = notification_type
         return self.send_raw(payload)
 
     def send_message(self, recipient_id, message, notification_type=NotificationType.regular):
         return self.send_recipient(recipient_id, {
             'message': message
-        }, notification_type.value)
+        }, notification_type)
 
     def send_attachment(self, recipient_id, attachment_type, attachment_path,
                         notification_type=NotificationType.regular):
@@ -71,7 +71,7 @@ class Bot:
                     'id': recipient_id
                 }
             },
-            'notification_type': notification_type.value,
+            'notification_type': notification_type,
             'message': {
                 {
                     'attachment': {
@@ -109,7 +109,7 @@ class Bot:
                     'url': attachment_url
                 }
             }
-        }, notification_type.value)
+        }, notification_type)
 
     def send_text_message(self, recipient_id, message, notification_type=NotificationType.regular):
         """Send text messages to the specified recipient.
@@ -122,7 +122,7 @@ class Bot:
         """
         return self.send_message(recipient_id, {
             'text': message
-        }, notification_type.value)
+        }, notification_type)
 
     def send_generic_message(self, recipient_id, elements, notification_type=NotificationType.regular):
         """Send generic messages to the specified recipient.
@@ -141,7 +141,7 @@ class Bot:
                     "elements": elements
                 }
             }
-        }, notification_type.value)
+        }, notification_type)
 
     def send_receipt(self, recipient_id, payload, notification_type=NotificationType.regular):
         """
@@ -156,7 +156,7 @@ class Bot:
                     "payload": payload
                 }
             }
-        }, notification_type.value)
+        }, notification_type)
 
 
     def send_button_message(self, recipient_id, text, buttons, notification_type=NotificationType.regular):
@@ -178,7 +178,7 @@ class Bot:
                     "buttons": buttons
                 }
             }
-        }, notification_type.value)
+        }, notification_type)
 
     def send_quick_replies(self, recipient_id, text, buttons, notification_type=NotificationType.regular):
         """Send quick reply buttons to the recepiend.
@@ -198,7 +198,7 @@ class Bot:
         return self.send_message(recipient_id, {
             "text": text,
             "quick_replies": buttons
-        }, notification_type.value)
+        }, notification_type)
 
     def send_action(self, recipient_id, action, notification_type=NotificationType.regular):
         """Send typing indicators or send read receipts to the specified recipient.
@@ -212,7 +212,7 @@ class Bot:
         """
         return self.send_recipient(recipient_id, {
             'sender_action': action
-        }, notification_type.value)
+        }, notification_type)
 
     def send_image(self, recipient_id, image_path, notification_type=NotificationType.regular):
         """Send an image to the specified recipient.
@@ -224,7 +224,7 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "image", image_path, notification_type.value)
+        return self.send_attachment(recipient_id, "image", image_path, notification_type)
 
     def send_image_url(self, recipient_id, image_url, notification_type=NotificationType.regular):
         """Send an image to specified recipient using URL.
@@ -236,7 +236,7 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "image", image_url, notification_type.value)
+        return self.send_attachment_url(recipient_id, "image", image_url, notification_type)
 
     def send_audio(self, recipient_id, audio_path, notification_type=NotificationType.regular):
         """Send audio to the specified recipient.
@@ -248,7 +248,7 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "image", audio_path, notification_type.value)
+        return self.send_attachment(recipient_id, "image", audio_path, notification_type)
 
     def send_audio_url(self, recipient_id, audio_url, notification_type=NotificationType.regular):
         """Send audio to specified recipient using URL.
@@ -260,7 +260,7 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "audio", audio_url, notification_type.value)
+        return self.send_attachment_url(recipient_id, "audio", audio_url, notification_type)
 
     def send_video(self, recipient_id, video_path, notification_type=NotificationType.regular):
         """Send video to the specified recipient.
@@ -272,7 +272,7 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "video", video_path, notification_type.value)
+        return self.send_attachment(recipient_id, "video", video_path, notification_type)
 
     def send_video_url(self, recipient_id, video_url, notification_type=NotificationType.regular):
         """Send video to specified recipient using URL.
@@ -284,7 +284,7 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "video", video_url, notification_type.value)
+        return self.send_attachment_url(recipient_id, "video", video_url, notification_type)
 
     def send_file(self, recipient_id, file_path, notification_type=NotificationType.regular):
         """Send file to the specified recipient.
@@ -295,7 +295,7 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "file", file_path, notification_type.value)
+        return self.send_attachment(recipient_id, "file", file_path, notification_type)
 
     def send_file_url(self, recipient_id, file_url, notification_type=NotificationType.regular):
         """Send file to the specified recipient.
@@ -306,7 +306,7 @@ class Bot:
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "file", file_url, notification_type.value)
+        return self.send_attachment_url(recipient_id, "file", file_url, notification_type)
 
     def get_user_info(self, recipient_id, fields=None):
         """Getting information about the user
