@@ -139,6 +139,31 @@ class Bot:
             }
         }, notification_type)
 
+    def send_quick_reply(self, recipient_id, text, type, title='', payload='', img_url='', notification_type=NotificationType.regular):
+        """Send a quick reply to the specified recipient with specific type of quick reply.
+        https://developers.facebook.com/docs/messenger-platform/reference/send-api/quick-replies/
+        Input:
+            recipient_id: recipient id to send to
+            text: Text to ask for something
+            type: content_type. eg: text, location, user_phone_number, user_email
+            title: Title of quick reply
+            payload: Postback payload
+            img_url: Icon URL for quick Reply suggestion
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_message(recipient_id, {
+            "text": text,
+            "quick_replies":[
+                {
+                    "content_type":type,
+                    "title":title,
+                    "payload":payload,
+                    "image_url":img_url
+                }
+            ]
+        }, notification_type)
+
     def send_button_message(self, recipient_id, text, buttons, notification_type=NotificationType.regular):
         """Send text messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/button-template
