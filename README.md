@@ -11,6 +11,7 @@ This wrapper has the following functions:
 * send_text_message(recipient_id, message)
 * send_message(recipient_id, message)
 * send_generic_message(recipient_id, elements)
+* send_quick_reply(recipient_id, text, type, title, payload, img_url)
 * send_button_message(recipient_id, text, buttons)
 * send_attachment(recipient_id, attachment_type, attachment_path)
 * send_attachment_url(recipient_id, attachment_type, attachment_url)
@@ -91,13 +92,14 @@ bot.send_image_url(recipient_id, image_url)
 
 * Structured Messages
 * Receipt Messages
-* Quick Replies
 * Airlines
 * Tests!
 
 ### Example
 
 ![Screenshot of Echo Facebook Bot](https://cloud.githubusercontent.com/assets/68039/14516627/905c84ae-0237-11e6-918e-2c2ae9352f7d.png)
+
+![Screenshot of Echo Facebook Bot Quick Reply](https://i.imgur.com/37YkYAY.jpg)
 
 You can find an example of an Echo Facebook Bot in ```examples/```
 
