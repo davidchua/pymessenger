@@ -302,3 +302,10 @@ class Bot:
     def _send_payload(self, payload):
         """ Deprecated, use send_raw instead """
         return self.send_raw(payload)
+    
+    def set_greeting_text(self, text):
+        data = {"setting_type": "greeting", "greeting": {"text": text}}
+        fmt = self.graph_url + "me/thread_settings?access_token={token}"
+        return requests.post(fmt.format(token=self.access_token),
+                             headers={"Content-Type": "application/json"},
+                             data=json.dumps(data))
