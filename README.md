@@ -25,6 +25,10 @@ This wrapper has the following functions:
 * send_action(recipient_id, action)
 * send_raw(payload)
 * get_user_info(recipient_id)
+* set_get_started(gs_obj)
+* set_persistent_menu(pm_obj)
+* remove_get_started()
+* remove_persistent_menu()
 
 You can see the code/documentation for there in [bot.py](pymessenger/bot.py).
 
