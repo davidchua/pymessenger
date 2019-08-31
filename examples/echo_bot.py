@@ -2,8 +2,8 @@
 This bot listens to port 5002 for incoming connections from Facebook. It takes
 in any messages that the bot receives and echos it back.
 """
-from flask import Flask, request
-from pymessenger.bot import Bot
+from flask       import Flask, request
+from pymessenger import Bot
 
 app = Flask(__name__)
 
@@ -23,7 +23,16 @@ def hello():
     if request.method == 'POST':
         output = request.get_json()
         for event in output['entry']:
-            messaging = event['messaging']
+            
+            if 'messaging' in event.keys():
+               messaging = event['messaging']
+            else:
+                """
+                continue loop if messaging dict key has nothing in
+                event variable
+                """
+                continue
+                
             for x in messaging:
                 if x.get('message'):
                     recipient_id = x['sender']['id']
