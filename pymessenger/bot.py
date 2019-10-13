@@ -368,7 +368,8 @@ class Bot:
             )
             result = response.json()
             return result
-    def send_text_quick_replies(self, recipient_id, listOfReplies, listOfPayloads=[], message=""):
+        
+    def send_text_quick_replies(self, recipient_id, listOfReplies, messageToReplyTo, listOfPayloads=[]):
         """
         Sends a list of text quick replies with an optional message to send before sending the quick replies
         Payload and Message are optional, however, if no payload for a specific reply (i.e. None) 
