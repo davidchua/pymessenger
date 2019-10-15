@@ -319,6 +319,24 @@ class Bot:
         )
         result = response.json()
         return result
+    
+    def set_greeting(self, greeting_obj):
+        """Specify the greeting message people will see on the welcome screen of your bot.
+        https://developers.facebook.com/docs/messenger-platform/reference/messenger-profile-api/greeting
+        Input:
+            greeting_obj: Your formatted greeting object as described by the API docs
+        Output:
+            Response from API as <dict>
+            
+        """
+        request_endpoint = '{0}/me/messenger_profile'.format(self.graph_url)
+        response = requests.post(
+            request_endpoint,
+            params = self.auth_args,
+            json = greeting_obj
+        )
+        result = response.json()
+        return result
 
     def set_persistent_menu(self, pm_obj):
         """Set a persistent_menu that stays same for every user. Before you can use this, make sure to have set a get started button.
