@@ -198,6 +198,31 @@ class Bot:
         """
         return self.send_attachment_url(recipient_id, "image", image_url, notification_type)
 
+    def send_list_message(self, recipient_id, elements, title='View More', payload_name='payload'):
+        payload = {
+            'recipient': {
+                'id': recipient_id
+            },
+            'message': {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "list",
+                        "top_element_style": "compact",
+                        "elements": elements,
+                        "buttons": [
+                                {
+                                 "title": title,
+                                 "type": "postback",
+                                 "payload": payload_name            
+                                 }
+                                  ]  
+                    }
+                }
+            }
+        }
+        return self.send_raw(payload)
+
     def send_audio(self, recipient_id, audio_path, notification_type=NotificationType.regular):
         """Send audio to the specified recipient.
         Audio must be MP3 or WAV
