@@ -369,9 +369,9 @@ class Bot:
             result = response.json()
             return result
         
-    def send_text_quick_replies(self, recipient_id, listOfReplies, messageToReplyTo, listOfPayloads=[]):
+    def send_text_quick_replies(self, recipient_id, listOfReplies, messageToReplyTo = "Hello, is there anything I can help you with?", listOfPayloads=[]):
         """
-        Sends a list of text quick replies with an optional message to send before sending the quick replies
+        Sends a list of text quick replies with an optional message (Default = " ") to send before sending the quick replies
         Payload and Message are optional, however, if no payload for a specific reply (i.e. None) 
         or for all quick replies, the payload will be defined as the reply itself.
         
@@ -402,7 +402,7 @@ class Bot:
                                             "title":reply,
                                             "payload":reply
                                             })
-                if payload != None:
+                else:
                     quickRepliesList.append({
                                             "content_type":"text",
                                             "title":reply,
@@ -419,7 +419,7 @@ class Bot:
                                             })
                     
         return  self.send_message(recipient_id, {
-                "text": message,
+                "text": messageToReplyTo,
                 "quick_replies": quickRepliesList
                 })
             
