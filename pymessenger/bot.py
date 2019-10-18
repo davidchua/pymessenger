@@ -368,3 +368,58 @@ class Bot:
             )
             result = response.json()
             return result
+        
+    def send_text_quick_replies(self, recipient_id, listOfReplies, messageToReplyTo = "Hello, is there anything I can help you with?", listOfPayloads=[]):
+        """
+        Sends a list of text quick replies with an optional message (Default = " ") to send before sending the quick replies
+        Payload and Message are optional, however, if no payload for a specific reply (i.e. None) 
+        or for all quick replies, the payload will be defined as the reply itself.
+        
+        
+        https://developers.facebook.com/docs/messenger-platform/send-messages/quick-replies/#text
+        
+        Output:
+            Response from API as <dict>
+        """
+        quickRepliesList = []
+        
+        # If no payloads identified
+        if len(listOfPayloads) == 0:     
+            for reply in listOfReplies:
+                quickRepliesList.append({
+                                        "content_type":"text",
+                                        "title":reply,
+                                        "payload":reply
+                                        })
+            
+        # If payloads is identified
+        else:
+            for reply, payload in zip(listOfReplies, listOfPayloads):
+                # if some payload is not identified in the list
+                if payload == None:
+                    quickRepliesList.append({
+                                            "content_type":"text",
+                                            "title":reply,
+                                            "payload":reply
+                                            })
+                else:
+                    quickRepliesList.append({
+                                            "content_type":"text",
+                                            "title":reply,
+                                            "payload":payload
+                                            })
+            
+            # if the length of payloads is less than replies, then just let the payload for the rest to be just the reply
+            if len(listOfPayloads) < len(listOfReplies):
+                for reply in listOfReplies[len(listOfPayloads):]:
+                    quickRepliesList.append({
+                                            "content_type":"text",
+                                            "title":reply,
+                                            "payload":reply
+                                            })
+                    
+        return  self.send_message(recipient_id, {
+                "text": messageToReplyTo,
+                "quick_replies": quickRepliesList
+                })
+            
