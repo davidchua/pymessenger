@@ -1,6 +1,6 @@
 import os
 
-from pymessenger.bot import Bot
+from pymessenger.bot import Bot, MessagingType, MessageTag
 from pymessenger import Element, Button
 
 TOKEN = os.environ.get('TOKEN')
@@ -23,6 +23,13 @@ def test_text_message():
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None
 
+def test_tag_text_message():
+    result = bot.send_text_message(recipient_id, "test",
+        messaging_type=MessagingType.message_tag, tag=MessageTag.confirmed_event_update)
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
+
 
 def test_elements():
     image_url = 'https://lh4.googleusercontent.com/-dZ2LhrpNpxs/AAAAAAAAAAI/AAAAAAAA1os/qrf-VeTVJrg/s0-c-k-no-ns/photo.jpg'
@@ -31,6 +38,18 @@ def test_elements():
                       item_url="http://arsenal.com")
     elements.append(element)
     result = bot.send_generic_message(recipient_id, elements)
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
+
+def test_elements_in_tag_message():
+    image_url = 'https://lh4.googleusercontent.com/-dZ2LhrpNpxs/AAAAAAAAAAI/AAAAAAAA1os/qrf-VeTVJrg/s0-c-k-no-ns/photo.jpg'
+    elements = []
+    element = Element(title="Arsenal", image_url=image_url, subtitle="Click to go to Arsenal website.",
+                      item_url="http://arsenal.com")
+    elements.append(element)
+    result = bot.send_generic_message(recipient_id, elements,
+        messaging_type=MessagingType.message_tag, tag=MessageTag.confirmed_event_update)
     assert type(result) is dict
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None

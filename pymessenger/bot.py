@@ -15,6 +15,17 @@ class NotificationType(Enum):
     no_push = "NO_PUSH"
 
 
+class MessagingType(Enum):
+    response = "RESPONSE"
+    update = "UPDATE"
+    message_tag = "MESSAGE_TAG"
+
+class MessageTag(Enum):
+    confirmed_event_update = "CONFIRMED_EVENT_UPDATE"
+    post_purchase_update = "POST_PURCHASE_UPDATE"
+    account_update = "ACCOUNT_UPDATE"
+    human_agent = "HUMAN_AGENT"
+
 class Bot:
     def __init__(self, access_token, **kwargs):
         """
@@ -49,10 +60,16 @@ class Bot:
         payload['notification_type'] = notification_type.value
         return self.send_raw(payload)
 
-    def send_message(self, recipient_id, message, notification_type=NotificationType.regular):
-        return self.send_recipient(recipient_id, {
+    def send_message(self, recipient_id, message, notification_type=NotificationType.regular,
+                     messaging_type=MessagingType.response, tag=MessageTag.account_update):
+        payload = {
             'message': message
-        }, notification_type)
+        }
+
+        if messaging_type == MessagingType.message_tag:
+            payload['messaging_type'] = messaging_type.value
+            payload['tag'] = tag.value
+        return self.send_recipient(recipient_id, payload, notification_type)
 
     def send_attachment(self, recipient_id, attachment_type, attachment_path,
                         notification_type=NotificationType.regular):
@@ -89,12 +106,16 @@ class Bot:
                              params=self.auth_args, headers=multipart_header).json()
 
     def send_attachment_url(self, recipient_id, attachment_type, attachment_url,
-                            notification_type=NotificationType.regular):
+                            notification_type=NotificationType.regular,
+                            messaging_type=MessagingType.response,
+                            tag=MessageTag.account_update):
         """Send an attachment to the specified recipient using URL.
         Input:
             recipient_id: recipient id to send to
             attachment_type: type of attachment (image, video, audio, file)
             attachment_url: URL of attachment
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
@@ -105,27 +126,33 @@ class Bot:
                     'url': attachment_url
                 }
             }
-        }, notification_type)
+        }, notification_type, messaging_type, tag)
 
-    def send_text_message(self, recipient_id, message, notification_type=NotificationType.regular):
+    def send_text_message(self, recipient_id, message, notification_type=NotificationType.regular,
+                          messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send text messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/text-message
         Input:
             recipient_id: recipient id to send to
             message: message to send
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
         return self.send_message(recipient_id, {
             'text': message
-        }, notification_type)
+        }, notification_type, messaging_type, tag)
 
-    def send_generic_message(self, recipient_id, elements, notification_type=NotificationType.regular):
+    def send_generic_message(self, recipient_id, elements, notification_type=NotificationType.regular,
+                             messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send generic messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/generic-template
         Input:
             recipient_id: recipient id to send to
             elements: generic message elements to send
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
@@ -137,15 +164,18 @@ class Bot:
                     "elements": elements
                 }
             }
-        }, notification_type)
+        }, notification_type, messaging_type, tag)
 
-    def send_button_message(self, recipient_id, text, buttons, notification_type=NotificationType.regular):
+    def send_button_message(self, recipient_id, text, buttons, notification_type=NotificationType.regular,
+                            messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send text messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/button-template
         Input:
             recipient_id: recipient id to send to
             text: text of message to send
             buttons: buttons to send
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
@@ -158,7 +188,7 @@ class Bot:
                     "buttons": buttons
                 }
             }
-        }, notification_type)
+        }, notification_type, messaging_type, tag)
 
     def send_action(self, recipient_id, action, notification_type=NotificationType.regular):
         """Send typing indicators or send read receipts to the specified recipient.
