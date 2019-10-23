@@ -5,3 +5,4 @@ Special thanks to the following people who has contributed to this project!
 * [bildzeitung](https://github.com/bildzeitung)
 * [Cretezy](https://github.com/Cretezy)
 * [Onyenanu](https://github.com/madewithkode)
+* [Mohamed Taha](https://github.com/mohamed-taha)

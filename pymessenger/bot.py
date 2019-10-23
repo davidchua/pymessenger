@@ -53,31 +53,34 @@ class Bot:
             self._auth_args = auth
         return self._auth_args
 
-    def send_recipient(self, recipient_id, payload, notification_type=NotificationType.regular):
+    def send_recipient(self, recipient_id, payload, notification_type=NotificationType.regular,
+                       messaging_type=MessagingType.response, tag=MessageTag.account_update):
         payload['recipient'] = {
             'id': recipient_id
         }
         payload['notification_type'] = notification_type.value
+        payload['messaging_type'] = messaging_type.value
+        if messaging_type == MessagingType.message_tag:
+            payload['tag'] = tag.value
         return self.send_raw(payload)
 
     def send_message(self, recipient_id, message, notification_type=NotificationType.regular,
                      messaging_type=MessagingType.response, tag=MessageTag.account_update):
-        payload = {
-            'message': message
-        }
-
-        if messaging_type == MessagingType.message_tag:
-            payload['messaging_type'] = messaging_type.value
-            payload['tag'] = tag.value
-        return self.send_recipient(recipient_id, payload, notification_type)
+        return self.send_recipient(recipient_id, {
+            'message': message,
+        }, notification_type, messaging_type, tag)
 
     def send_attachment(self, recipient_id, attachment_type, attachment_path,
-                        notification_type=NotificationType.regular):
+                        notification_type=NotificationType.regular,
+                        messaging_type=MessagingType.response,
+                        tag=MessageTag.account_update):
         """Send an attachment to the specified recipient using local path.
         Input:
             recipient_id: recipient id to send to
             attachment_type: type of attachment (image, video, audio, file)
             attachment_path: Path of attachment
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
@@ -88,6 +91,7 @@ class Bot:
                 }
             },
             'notification_type': notification_type,
+            'messaging_type': messaging_type.value,
             'message': {
                 {
                     'attachment': {
@@ -98,6 +102,8 @@ class Bot:
             },
             'filedata': (os.path.basename(attachment_path), open(attachment_path, 'rb'))
         }
+        if messaging_type == MessagingType.message_tag:
+            payload['tag'] = tag.value
         multipart_data = MultipartEncoder(payload)
         multipart_header = {
             'Content-Type': multipart_data.content_type
@@ -190,113 +196,140 @@ class Bot:
             }
         }, notification_type, messaging_type, tag)
 
-    def send_action(self, recipient_id, action, notification_type=NotificationType.regular):
+    def send_action(self, recipient_id, action, notification_type=NotificationType.regular,
+                    messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send typing indicators or send read receipts to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/sender-actions
 
         Input:
             recipient_id: recipient id to send to
             action: action type (mark_seen, typing_on, typing_off)
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
         return self.send_recipient(recipient_id, {
             'sender_action': action
-        }, notification_type)
+        }, notification_type, messaging_type, tag)
 
-    def send_image(self, recipient_id, image_path, notification_type=NotificationType.regular):
+    def send_image(self, recipient_id, image_path, notification_type=NotificationType.regular,
+                   messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send an image to the specified recipient.
         Image must be PNG or JPEG or GIF (more might be supported).
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/image-attachment
         Input:
             recipient_id: recipient id to send to
             image_path: path to image to be sent
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "image", image_path, notification_type)
+        return self.send_attachment(recipient_id, "image", image_path, notification_type, messaging_type, tag)
 
-    def send_image_url(self, recipient_id, image_url, notification_type=NotificationType.regular):
+    def send_image_url(self, recipient_id, image_url, notification_type=NotificationType.regular,
+                       messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send an image to specified recipient using URL.
         Image must be PNG or JPEG or GIF (more might be supported).
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/image-attachment
         Input:
             recipient_id: recipient id to send to
             image_url: url of image to be sent
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "image", image_url, notification_type)
+        return self.send_attachment_url(recipient_id, "image", image_url, notification_type, messaging_type, tag)
 
-    def send_audio(self, recipient_id, audio_path, notification_type=NotificationType.regular):
+    def send_audio(self, recipient_id, audio_path, notification_type=NotificationType.regular,
+                   messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send audio to the specified recipient.
         Audio must be MP3 or WAV
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/audio-attachment
         Input:
             recipient_id: recipient id to send to
             audio_path: path to audio to be sent
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "audio", audio_path, notification_type)
+        return self.send_attachment(recipient_id, "audio", audio_path, notification_type, messaging_type, tag)
 
-    def send_audio_url(self, recipient_id, audio_url, notification_type=NotificationType.regular):
+    def send_audio_url(self, recipient_id, audio_url, notification_type=NotificationType.regular,
+                       messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send audio to specified recipient using URL.
         Audio must be MP3 or WAV
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/audio-attachment
         Input:
             recipient_id: recipient id to send to
             audio_url: url of audio to be sent
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "audio", audio_url, notification_type)
+        return self.send_attachment_url(recipient_id, "audio", audio_url, notification_type, messaging_type, tag)
 
-    def send_video(self, recipient_id, video_path, notification_type=NotificationType.regular):
+    def send_video(self, recipient_id, video_path, notification_type=NotificationType.regular,
+                   messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send video to the specified recipient.
         Video should be MP4 or MOV, but supports more (https://www.facebook.com/help/218673814818907).
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/video-attachment
         Input:
             recipient_id: recipient id to send to
             video_path: path to video to be sent
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "video", video_path, notification_type)
+        return self.send_attachment(recipient_id, "video", video_path, notification_type, messaging_type, tag)
 
-    def send_video_url(self, recipient_id, video_url, notification_type=NotificationType.regular):
+    def send_video_url(self, recipient_id, video_url, notification_type=NotificationType.regular,
+                       messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send video to specified recipient using URL.
         Video should be MP4 or MOV, but supports more (https://www.facebook.com/help/218673814818907).
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/video-attachment
         Input:
             recipient_id: recipient id to send to
             video_url: url of video to be sent
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "video", video_url, notification_type)
+        return self.send_attachment_url(recipient_id, "video", video_url, notification_type, messaging_type, tag)
 
-    def send_file(self, recipient_id, file_path, notification_type=NotificationType.regular):
+    def send_file(self, recipient_id, file_path, notification_type=NotificationType.regular,
+                  messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send file to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/file-attachment
         Input:
             recipient_id: recipient id to send to
             file_path: path to file to be sent
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment(recipient_id, "file", file_path, notification_type)
+        return self.send_attachment(recipient_id, "file", file_path, notification_type, messaging_type, tag)
 
-    def send_file_url(self, recipient_id, file_url, notification_type=NotificationType.regular):
+    def send_file_url(self, recipient_id, file_url, notification_type=NotificationType.regular,
+                      messaging_type=MessagingType.response, tag=MessageTag.account_update):
         """Send file to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/file-attachment
         Input:
             recipient_id: recipient id to send to
             file_url: url of file to be sent
+            messaging_type: message type
+            tag: message tag in case of the message type is tag
         Output:
             Response from API as <dict>
         """
-        return self.send_attachment_url(recipient_id, "file", file_url, notification_type)
+        return self.send_attachment_url(recipient_id, "file", file_url, notification_type, messaging_type, tag)
 
     def get_user_info(self, recipient_id, fields=None):
         """Getting information about the user

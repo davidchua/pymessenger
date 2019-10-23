@@ -61,6 +61,14 @@ def test_image_url():
     assert type(result) is dict
     assert result.get('message_id') is not None
     assert result.get('recipient_id') is not None
+
+def test_image_url_in_tag_message():
+    image_url = 'https://lh4.googleusercontent.com/-dZ2LhrpNpxs/AAAAAAAAAAI/AAAAAAAA1os/qrf-VeTVJrg/s0-c-k-no-ns/photo.jpg'
+    result = bot.send_image_url(recipient_id, image_url,
+        messaging_type=MessagingType.message_tag, tag=MessageTag.account_update)
+    assert type(result) is dict
+    assert result.get('message_id') is not None
+    assert result.get('recipient_id') is not None
     
 def test_image_gif_url():
     image_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
