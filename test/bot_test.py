@@ -92,4 +92,4 @@ def test_fields():
     fields = ['first_name', 'last_name']
     user_profile = bot.get_user_info(recipient_id, fields=fields)
     assert user_profile is not None
-    assert len(user_profile.keys()) == len(fields)
+    assert len(user_profile.keys()) == len(fields) + 1
