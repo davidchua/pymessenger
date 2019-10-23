@@ -5,6 +5,7 @@ dist/
 test.py
 
 .idea/
+.vscode/
 
 # Created by https://www.gitignore.io/api/python
 
