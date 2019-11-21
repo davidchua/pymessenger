@@ -1,5 +1,6 @@
 import os
 from enum import Enum
+import json
 
 import requests
 from requests_toolbelt import MultipartEncoder
@@ -65,20 +66,20 @@ class Bot:
             Response from API as <dict>
         """
         payload = {
-            'recipient': {
+            'recipient': json.dumps({
                 {
                     'id': recipient_id
                 }
-            },
+            }),
             'notification_type': notification_type,
-            'message': {
+            'message': json.dumps({
                 {
                     'attachment': {
                         'type': attachment_type,
                         'payload': {}
                     }
                 }
-            },
+            }),
             'filedata': (os.path.basename(attachment_path), open(attachment_path, 'rb'))
         }
         multipart_data = MultipartEncoder(payload)
