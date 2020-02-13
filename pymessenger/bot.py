@@ -160,6 +160,21 @@ class Bot:
             }
         }, notification_type)
 
+    def send_quick_replies_message(self, recipient_id, text, quick_replies, notification_type=NotificationType.regular):
+        """Send text messages to the specified recipient.
+        https://developers.facebook.com/docs/messenger-platform/send-messages/quick-replies/
+        Input:
+            recipient_id: recipient id to send to
+            text: text of message to send
+            quick_replies: quick replies to send
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_message(recipient_id, {
+            'text': text,
+            'quick_replies': quick_replies
+        }, notification_type)
+
     def send_action(self, recipient_id, action, notification_type=NotificationType.regular):
         """Send typing indicators or send read receipts to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/sender-actions
