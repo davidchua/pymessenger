@@ -160,6 +160,18 @@ class Bot:
             }
         }, notification_type)
 
+    def send_custom_payload(self, recipient_id, payload, notification_type=NotificationType.regular):
+        """This allows users send custom data to the Messenger API.
+        This is best for cases where Messenger releases new features 
+        And the PyMessenger team hasn't specifically implemented that feature
+        Input:
+            recipient_id: recipient id to send to
+            payload: dictionary containing raw request payload (requested by Messenger)
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_message(recipient_id, payload, notification_type)
+
     def send_action(self, recipient_id, action, notification_type=NotificationType.regular):
         """Send typing indicators or send read receipts to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/sender-actions
