@@ -160,7 +160,7 @@ class Bot:
             }
         }, notification_type)
 
-    def send_custom_payload(self, recipient_id, payload, notification_type=NotificationType.regular):
+    def send_custom_message(self, recipient_id, payload, notification_type=NotificationType.regular):
         """This allows users send custom data to the Messenger API.
         This is best for cases where Messenger releases new features 
         And the PyMessenger team hasn't specifically implemented that feature
