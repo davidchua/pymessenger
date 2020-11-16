@@ -15,13 +15,13 @@ except ImportError:
 setup(
     name='pymessenger',
     packages=['pymessenger'],
-    version='1.0.0',
+    version='1.0.2',
     install_requires=installation_requirements,
     description="Python Wrapper for Facebook Messenger Platform",
-    author='David Chua',
+    author='David Chua, Felix Clone',
     author_email='zhchua@gmail.com',
-    url='https://github.com/davidchua/pymessenger',
-    download_url='https://github.com/davidchua/pymessenger/tarball/1.0.0',
+    url='https://github.com/felixcheruiyot/pymessenger/',
+    download_url='https://github.com/felixcheruiyot/pymessenger/tarball/master',
     keywords=['facebook messenger', 'python', 'wrapper', 'bot', 'messenger bot'],
     classifiers=[],
 )

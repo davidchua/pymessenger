@@ -1,15 +1,16 @@
 import os
-from enum import Enum
+from enum import EnumMeta
 
+import logging
 import requests
 from requests_toolbelt import MultipartEncoder
 
 from pymessenger import utils
 
-DEFAULT_API_VERSION = 2.6
+DEFAULT_API_VERSION = 3.2
 
 
-class NotificationType(Enum):
+class NotificationType(EnumMeta):
     regular = "REGULAR"
     silent_push = "SILENT_PUSH"
     no_push = "NO_PUSH"
@@ -46,7 +47,7 @@ class Bot:
         payload['recipient'] = {
             'id': recipient_id
         }
-        payload['notification_type'] = notification_type.value
+        payload['notification_type'] = notification_type
         return self.send_raw(payload)
 
     def send_message(self, recipient_id, message, notification_type=NotificationType.regular):
@@ -85,8 +86,11 @@ class Bot:
         multipart_header = {
             'Content-Type': multipart_data.content_type
         }
-        return requests.post(self.graph_url, data=multipart_data,
-                             params=self.auth_args, headers=multipart_header).json()
+        response = requests.post(self.graph_url, data=multipart_data,
+                                 params=self.auth_args, headers=multipart_header).json()
+
+        logging.info(response)
+        return response
 
     def send_attachment_url(self, recipient_id, attachment_type, attachment_url,
                             notification_type=NotificationType.regular):
@@ -139,6 +143,22 @@ class Bot:
             }
         }, notification_type)
 
+    def send_receipt(self, recipient_id, payload, notification_type=NotificationType.regular):
+        """
+        Receipt template
+        See https://developers.facebook.com/docs/messenger-platform/send-messages/template/receipt
+        for payload details
+        """
+        return self.send_recipient(recipient_id, {
+            "message": {
+                "attachment": {
+                    "type": "template",
+                    "payload": payload
+                }
+            }
+        }, notification_type)
+
+
     def send_button_message(self, recipient_id, text, buttons, notification_type=NotificationType.regular):
         """Send text messages to the specified recipient.
         https://developers.facebook.com/docs/messenger-platform/send-api-reference/button-template
@@ -158,6 +178,26 @@ class Bot:
                     "buttons": buttons
                 }
             }
+        }, notification_type)
+
+    def send_quick_replies(self, recipient_id, text, buttons, notification_type=NotificationType.regular):
+        """Send quick reply buttons to the recepiend.
+        https://developers.facebook.com/docs/messenger-platform/send-api-reference/quick-replies
+        Input:
+            recipient_id: recipient id to send to
+            buttons: buttons to send
+            button dict:
+                {
+                    "content_type":"text",
+                    "title":"Red",
+                    "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+                }
+        Output:
+            Response from API as <dict>
+        """
+        return self.send_message(recipient_id, {
+            "text": text,
+            "quick_replies": buttons
         }, notification_type)
 
     def send_action(self, recipient_id, action, notification_type=NotificationType.regular):
@@ -285,7 +325,9 @@ class Bot:
         request_endpoint = '{0}/{1}'.format(self.graph_url, recipient_id)
         response = requests.get(request_endpoint, params=params)
         if response.status_code == 200:
-            return response.json()
+            result = response.json()
+            logging.info(result)
+            return result
 
         return None
 
@@ -297,6 +339,7 @@ class Bot:
             json=payload
         )
         result = response.json()
+        logging.info(result)
         return result
 
     def _send_payload(self, payload):
