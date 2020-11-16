@@ -7,7 +7,7 @@ from requests_toolbelt import MultipartEncoder
 
 from pymessenger import utils
 
-DEFAULT_API_VERSION = 2.6
+DEFAULT_API_VERSION = 3.2
 
 
 class NotificationType(EnumMeta):
