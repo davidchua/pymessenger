@@ -5,7 +5,7 @@ from .bot import Bot
 
 
 class Element(dict):
-    __acceptable_keys = ['title', 'item_url', 'image_url', 'subtitle', 'buttons']
+    __acceptable_keys = ['title', 'default_action', 'image_url', 'subtitle', 'buttons']
 
     def __init__(self, *args, **kwargs):
         if six.PY2:
