@@ -2,7 +2,7 @@
 
 Python Wrapper for [Facebook Messenger Platform](https://developers.facebook.com/docs/messenger-platform).
 
-__Disclaimer__: This wrapper is __NOT__ an official wrapper and do not attempt to represent Facebook in anyway.
+__Disclaimer__: This wrapper is __NOT__ an official wrapper and does not attempt to represent Facebook in any way.
 
 ### About
 
@@ -55,7 +55,7 @@ bot = Bot(<access_token>, [optional: app_secret])
 bot.send_text_message(recipient_id, message)
 ```
 
-__Note__: From Facebook regarding User IDs
+__Note__ from Facebook regarding User IDs
 
 > These ids are page-scoped. These ids differ from those returned from Facebook Login apps which are app-scoped. You must use ids retrieved from a Messenger integration for this page in order to function properly.
 
@@ -72,7 +72,7 @@ __Note__: From Facebook regarding User IDs
 from pymessenger.bot import Bot
 bot = Bot(<access_token>)
 elements = []
-element = Element(title="test", image_url="<arsenal_logo.png>", subtitle="subtitle", item_url="http://arsenal.com")
+element = Element(title="test", image_url="<arsenal_logo.png>", subtitle="subtitle", item_url="https://arsenal.com")
 elements.append(element)
 
 bot.send_generic_message(recipient_id, elements)
@@ -87,7 +87,7 @@ Output:
 ```python
 from pymessenger.bot import Bot
 bot = Bot(<access_token>)
-image_url = "http://url/to/image.png"
+image_url = "https://url/to/image.png"
 bot.send_image_url(recipient_id, image_url)
 ```
 
